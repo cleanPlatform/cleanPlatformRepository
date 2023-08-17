@@ -1,3 +1,6 @@
 npx sequelize model:generate --name User --attributes userId:integer,roleId:intege,name:string,nickname:string,email:string,password:string,address:string,phoneNumber:string
 
 npx seuquelize db:create
+
+
+npx sequelize-cli migration:generate --name createCompany

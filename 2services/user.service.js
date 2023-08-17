@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 class UserService {
   userRepository = new UserRepository();
   // 회원가입 API
-  signupUser = async (loginId, password, nickname) => {
+  signupUser = async (roleId, loginId, password, nickname, name, email, address, phoneNumber) => {
     const idReg = /^[a-zA-Z0-9]{3,}$/; //loginId 형식검사
     const passwordReg = /^.{4,}$/; //password 형식 검사
     if (!idReg.test(loginId)) {
@@ -26,7 +26,16 @@ class UserService {
 
     //암호화
     const hashPassword = await bcrypt.hash(password, 6);
-    await this.userRepository.createUser(loginId, hashPassword, nickname);
+    await this.userRepository.createUser(
+      roleId,
+      loginId,
+      hashPassword,
+      nickname,
+      name,
+      email,
+      address,
+      phoneNumber
+    );
   };
   // 로그인 API
   //   loginUser = async (loginId, password) => {
