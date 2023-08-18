@@ -1,4 +1,5 @@
 const { Company } = require('../0models');
+
 const { Op } = require('sequelize');
 
 class CompanyRepository {
@@ -44,5 +45,6 @@ class CompanyRepository {
     return await Company.destroy({ where: { companyId: companyId } });
   };
 }
+
 
 module.exports = CompanyRepository;

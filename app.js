@@ -1,15 +1,20 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 
+const cors = require('cors');
+
+
 require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
 
-const router = require('./0routes');
+
+const router = require('./0router');
 
 app.use(express.json());
-app.use(cors({ origin: true, credientials: true }));
+app.use(cors({ origin: true, credentials: true }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));

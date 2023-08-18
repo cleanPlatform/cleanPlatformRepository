@@ -1,5 +1,9 @@
 const CompanyService = require('../2services/company.service');
 
+const ApiError = require('../apierror');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
 class CompanyController {
   companyService = new CompanyService();
 
@@ -67,6 +71,7 @@ class CompanyController {
       return res.status(400).json({ errorMessage: error.message });
     }
   };
+
 }
 
 module.exports = CompanyController;

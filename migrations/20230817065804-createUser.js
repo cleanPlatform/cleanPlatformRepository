@@ -10,8 +10,16 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      name: {
+      roleId: {
         type: Sequelize.INTEGER(30),
+        allowNull: false,
+      },
+      loginId: {
+        type: Sequelize.STRING(30),
+        allowNull: false,
+      },
+      name: {
+        type: Sequelize.STRING(30),
         allowNull: false,
       },
       nickname: {
