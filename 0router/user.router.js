@@ -6,7 +6,7 @@ const usersController = new UsersController();
 
 // const authMiddleware = require('../middlewares/');
 
-router.post('/signup', usersController.signupUser);
+router.post('/signup', usersController.signup);
 // router.get('/me', usersController.referUser);
 router.put('/me', usersController.updateUser);
 // router.post('/signIn', usersController.login);

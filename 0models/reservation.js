@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 class Reservation extends Sequelize.Model {
   static initiate(sequelize) {
-    Company.init(
+    Reservation.init(
       {
         reservationId: {
           type: Sequelize.INTEGER,

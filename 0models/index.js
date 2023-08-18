@@ -13,7 +13,12 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config,
+  );
 }
 
 fs.readdirSync(__dirname)
@@ -26,12 +31,18 @@ fs.readdirSync(__dirname)
     );
   })
   .forEach((file) => {
-    const modelDefiner = require(path.join(__dirname, file));
-    // const model = modelDefiner.initiate(sequelize);
+    // const model = require(path.join(__dirname, file))(
+    //     sequelize,
+    //     Sequelize.DataTypes
+    // );
+    // console.log(file);
     const model = require(path.join(__dirname, file));
-    // console.log(model);
-    // console.log(model.name);
+    // console.log(`model: ${model}`);
+    // console.log(`model name: ${model.name}`);
+    // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@");
+    // console.log(`model: ${model}`);
     db[model.name] = model;
+    model.initiate(sequelize);
   });
 
 Object.keys(db).forEach((modelName) => {

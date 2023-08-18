@@ -142,5 +142,7 @@ dist
 .svelte-kit
 
 .env
+./app.js
+./0router/index.js
 
 # End of https://www.toptal.com/developers/gitignore/api/node
