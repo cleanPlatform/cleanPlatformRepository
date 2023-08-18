@@ -6,7 +6,14 @@ const bcrypt = require('bcrypt');
 class UserService {
   userRepository = new UserRepository();
   // 회원가입 API
-  signupUser = async (roleId, loginId, password, nickname, name, email, address, phoneNumber) => {
+  signup = async (userId, password, passwordConfirm, nickname, email, address, phoneNumber) => {
+    if (!loginId || !password || !nickname) {
+      return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
+    }
+    if (password !== passwordConfirm) {
+      return res.status(412).json({ message: '패스워드가 일치하지 않습니다.' });
+    }
+
     const idReg = /^[a-zA-Z0-9]{3,}$/; //loginId 형식검사
     const passwordReg = /^.{4,}$/; //password 형식 검사
     if (!idReg.test(loginId)) {

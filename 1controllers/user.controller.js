@@ -3,20 +3,10 @@ const UserService = require('../2services/user.service');
 class UsersController {
   userService = new UserService();
   // 회원가입 API
-  signupUser = async (req, res) => {
+  signup = async (req, res) => {
     try {
-      const {
-        roleId,
-        loginId,
-        password,
-        passwordConfirm,
-        nickname,
-        name,
-        email,
-        address,
-        phoneNumber,
-      } = req.body;
-      console.log('회원가입=>', req.body);
+      const { userId, password, passwordConfirm, nickname, email, address, phoneNumber } = req.body;
+
       if (!loginId || !password || !nickname) {
         return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
       }
@@ -24,12 +14,11 @@ class UsersController {
         return res.status(412).json({ message: '패스워드가 일치하지 않습니다.' });
       }
 
-      await this.userService.signupUser(
-        roleId,
-        loginId,
+      await this.userService.signup(
+        userId,
         password,
+        passwordConfirm,
         nickname,
-        name,
         email,
         address,
         phoneNumber
@@ -37,7 +26,7 @@ class UsersController {
 
       return res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
     } catch (err) {
-      console.log(err);
+      console.log(error);
       return res.status(err.status || 500).json({ message: err.message });
     }
   };

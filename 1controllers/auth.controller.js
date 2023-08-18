@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../0models/user');
 const bcrypt = require('bcrypt');
 
 class AuthController {
-  loginController = async (req, res, next) => {
+  signin = async (req, res, next) => {
     try {
       const {email, password} = req.body;
       if (res.locals.isLoggedIn) {
@@ -30,7 +30,7 @@ class AuthController {
     }
   };
 
-  logoutController = (req, res) => {
+  signout = (req, res) => {
     try {
       if (!res.locals.isLoggedIn) {
         return res.status(400).json({errorMessage: '로그인 상태가 아닙니다'});

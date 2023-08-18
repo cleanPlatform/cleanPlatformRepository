@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 class Offer extends Sequelize.Model {
   static initiate(sequelize) {
-    Service.init(
+    Offer.init(
       {
         offerId: {
           type: Sequelize.INTEGER,
@@ -31,8 +31,8 @@ class Offer extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: 'Service',
-        tableName: 'services',
+        modelName: 'Offer',
+        tableName: 'offers',
         paranoid: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',
