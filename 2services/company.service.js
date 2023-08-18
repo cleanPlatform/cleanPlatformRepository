@@ -2,7 +2,7 @@ const CompanyRepository = require('../3repositories/company.repository');
 
 const ApiError = require('../apierror');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 
 class CompanyService {
