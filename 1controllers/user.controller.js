@@ -1,23 +1,15 @@
 const UserService = require('../2services/user.service');
 
 class UsersController {
-  userService = new UserService();
-  // 회원가입 API
+  constructor() {
+    this.userService = new UserService();
+  } // 회원가입 API
   signupUser = async (req, res) => {
     try {
-      const {
-        roleId,
-        loginId,
-        password,
-        passwordConfirm,
-        nickname,
-        name,
-        email,
-        address,
-        phoneNumber,
-      } = req.body;
+      const { permission, name, nickname, email, password, passwordConfirm, address, phoneNumber } =
+        req.body;
       console.log('회원가입=>', req.body);
-      if (!loginId || !password || !nickname) {
+      if (!password || !nickname) {
         return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
       }
       if (password !== passwordConfirm) {
@@ -25,12 +17,12 @@ class UsersController {
       }
 
       await this.userService.signupUser(
-        roleId,
-        loginId,
-        password,
-        nickname,
+        permission,
         name,
+        nickname,
         email,
+        password,
+        passwordConfirm,
         address,
         phoneNumber
       );

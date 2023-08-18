@@ -6,33 +6,45 @@ const bcrypt = require('bcrypt');
 class UserService {
   userRepository = new UserRepository();
   // 회원가입 API
-  signupUser = async (roleId, loginId, password, nickname, name, email, address, phoneNumber) => {
-    const idReg = /^[a-zA-Z0-9]{3,}$/; //loginId 형식검사
-    const passwordReg = /^.{4,}$/; //password 형식 검사
-    if (!idReg.test(loginId)) {
-      throw new ApiError('아이디 형식이 일치하지 않습니다.', 410);
-    }
-    if (!passwordReg.test(password)) {
-      throw new ApiError('패스워드 형식이 일치하지 않습니다.', 411);
-    }
-    if (password.includes(loginId)) {
-      throw new ApiError('패스워드에 아이디가 포함되어 있습니다.', 413);
-    }
+  signupUser = async (
+    permission,
+    name,
+    nickname,
+    email,
+    password,
+    passwordConfirm,
+    address,
+    phoneNumber
+  ) => {
+    // const idReg = /^[a-zA-Z0-9]{3,}$/; //loginId 형식검사
+    // const passwordReg = /^.{4,}$/; //password 형식 검사
+    // if (!idReg.test(loginId)) {
+    //   throw new ApiError('아이디 형식이 일치하지 않습니다.', 410);
+    // }
+    // if (!passwordReg.test(password)) {
+    //   throw new ApiError('패스워드 형식이 일치하지 않습니다.', 411);
+    // }
+    // if (password.includes(loginId)) {
+    //   throw new ApiError('패스워드에 아이디가 포함되어 있습니다.', 413);
+    // }
+    // console.log('정규식 통과');
 
-    const isExistUser = await this.userRepository.findUser(loginId);
-    if (isExistUser) {
-      throw new ApiError('중복된 아이디 입니다.', 409);
-    }
+    // const isExistUser = await this.userRepository.findUser(loginId);
+    // console.log('isExistUser :', isExistUser);
+    // if (isExistUser) {
+    //   throw new ApiError('중복된 아이디 입니다.', 409);
+    // }
 
     //암호화
-    const hashPassword = await bcrypt.hash(password, 6);
+    // const hashPassword = await bcrypt.hash(password, 6);
+    console.log('password :', typeof password, password);
     await this.userRepository.createUser(
-      roleId,
-      loginId,
-      hashPassword,
-      nickname,
+      permission,
       name,
+      nickname,
       email,
+      password,
+      passwordConfirm,
       address,
       phoneNumber
     );

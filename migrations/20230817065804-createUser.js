@@ -10,8 +10,8 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      roleId: {
-        type: Sequelize.INTEGER(30),
+      permission: {
+        type: Sequelize.ENUM('admin', 'owner', 'guest'),
         allowNull: false,
       },
       loginId: {
