@@ -10,7 +10,7 @@ class Reservation extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        serviceId: {
+        offerId: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
@@ -18,20 +18,16 @@ class Reservation extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        memo: {
-          type: Sequelize.STRING(300),
-          allowNull: false,
+        date: {
+          type: Sequelize.DATE,
+          allowNull: true,
         },
-        state: {
+        extraRequests: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        reason: {
+        cancelReason: {
           type: Sequelize.STRING(200),
-          allowNull: false,
-        },
-        beginDate: {
-          type: Sequelize.DATE,
           allowNull: false,
         },
       },
@@ -41,7 +37,7 @@ class Reservation extends Sequelize.Model {
         underscored: false,
         modelName: 'Reservation',
         tableName: 'reservations',
-        paranoid: false,
+        paranoid: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
       },
