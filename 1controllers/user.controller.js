@@ -1,33 +1,33 @@
 const UserService = require('../2services/user.service');
+const ApiError = require('../utils/apierror');
 
 class UsersController {
   userService = new UserService();
   // 회원가입 API
   signup = async (req, res) => {
     try {
-      const { userId, password, passwordConfirm, nickname, email, address, phoneNumber } = req.body;
-
-      if (!loginId || !password || !nickname) {
-        return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
-      }
-      if (password !== passwordConfirm) {
-        return res.status(412).json({ message: '패스워드가 일치하지 않습니다.' });
-      }
+      const { email, password, passwordConfirm, nickname, name, address, phoneNumber, permission } = req.body;
 
       await this.userService.signup(
-        userId,
+        email,
         password,
         passwordConfirm,
         nickname,
-        email,
+        name,
         address,
-        phoneNumber
+        phoneNumber,
+        permission
       );
 
       return res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
     } catch (err) {
-      console.log(error);
-      return res.status(err.status || 500).json({ message: err.message });
+      if (err instanceof ApiError) {
+        console.error(err.message);
+        return res.status(err.status).json({ message: err.message });
+      }
+
+      console.log(err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
   // 로그인 API
