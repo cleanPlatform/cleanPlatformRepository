@@ -1,5 +1,5 @@
 const ReservationService = require('../2services/reservation.service');
-const ApiError = require('../apierror');
+const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 

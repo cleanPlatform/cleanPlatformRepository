@@ -10,12 +10,12 @@ class User extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        roleId: {
-          type: Sequelize.INTEGER,
+        permission: {
+          type: Sequelize.ENUM("admin", "owner", "guest"),
           allowNull: false,
         },
         name: {
-          type: Sequelize.INTEGER(40),
+          type: Sequelize.STRING(40),
           allowNull: false,
         },
         nickname: {

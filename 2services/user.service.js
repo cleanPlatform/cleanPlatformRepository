@@ -1,48 +1,61 @@
 const UserRepository = require('../3repositories/user.repository');
-const ApiError = require('../apierror');
+const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 class UserService {
   userRepository = new UserRepository();
   // 회원가입 API
-  signup = async (userId, password, passwordConfirm, nickname, email, address, phoneNumber) => {
-    if (!loginId || !password || !nickname) {
-      return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
+  signup = async (
+    email,
+    password,
+    passwordConfirm,
+    nickname,
+    name,
+    address,
+    phoneNumber,
+    permission
+  ) => {
+    if (!email || !password || !nickname) {
+      throw new ApiError(412, '입력되지 않은 정보가 있습니다.');
     }
     if (password !== passwordConfirm) {
-      return res.status(412).json({ message: '패스워드가 일치하지 않습니다.' });
+      throw new ApiError(412, '패스워드가 일치하지 않습니다.');
     }
 
-    const idReg = /^[a-zA-Z0-9]{3,}$/; //loginId 형식검사
-    const passwordReg = /^.{4,}$/; //password 형식 검사
-    if (!idReg.test(loginId)) {
-      throw new ApiError('아이디 형식이 일치하지 않습니다.', 410);
-    }
-    if (!passwordReg.test(password)) {
-      throw new ApiError('패스워드 형식이 일치하지 않습니다.', 411);
-    }
-    if (password.includes(loginId)) {
-      throw new ApiError('패스워드에 아이디가 포함되어 있습니다.', 413);
-    }
+    // const idReg = /^[a-zA-Z0-9]{3,}$/; //loginId 형식검사
+    // const passwordReg = /^.{4,}$/; //password 형식 검사
+    // if (!idReg.test(email)) {
+    //   throw new ApiError(410, '아이디 형식이 일치하지 않습니다.');
+    // }
+    // if (!passwordReg.test(password)) {
+    //   throw new ApiError(411, '패스워드 형식이 일치하지 않습니다.');
+    // }
+    // if (password.includes(email)) {
+    //   throw new ApiError(413, '패스워드에 아이디가 포함되어 있습니다.');
+    // }
 
-    const isExistUser = await this.userRepository.findUser(loginId);
+    const isExistUser = await this.userRepository.findUser(email);
     if (isExistUser) {
-      throw new ApiError('중복된 아이디 입니다.', 409);
+      throw new ApiError(409, '중복된 아이디 입니다.');
     }
 
     //암호화
-    const hashPassword = await bcrypt.hash(password, 6);
-    await this.userRepository.createUser(
-      roleId,
-      loginId,
-      hashPassword,
+    password = await bcrypt.hash(password, 6);
+    const result = await this.userRepository.createUser(
+      email,
+      password,
       nickname,
       name,
-      email,
       address,
-      phoneNumber
+      phoneNumber,
+      permission
     );
+    if (!result) {
+      throw new ApiError(400, '계정 생성에 실패하였습니다.');
+    }
+
+    // return result;
   };
   // 로그인 API
   //   loginUser = async (loginId, password) => {
