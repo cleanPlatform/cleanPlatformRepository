@@ -1,14 +1,15 @@
 const { User } = require('../0models');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 class UserRepository {
   // loginId로 회원 조회
-  // findUser = async (loginId) => {
-  //   return await User.findOne({ where: { loginId } });
-  // };
+  findUser = async (email) => {
+    return await User.findOne({ where: { email } });
+  };
   // 회원가입 API
-  createUser = async (permission, name, nickname, email, password, address, phoneNumber) => {
-    console.log('=>', password);
-    const createId = await User.create({
+  signup_repository = async (permission, name, nickname, email, password, address, phoneNumber) => {
+    const result = await User.create({
       permission,
       name,
       nickname,
@@ -17,10 +18,15 @@ class UserRepository {
       address,
       phoneNumber,
     });
-    console.log('=>', createId);
 
-    return createId;
+    return result;
   };
+
+  login_repository = async (email, password) => {
+    try {
+    } catch (err) {}
+  };
+
   //회원 정보 수정 API
   updateUser = async (userId, hashPassword, nickname) => {
     const updateValues = {};

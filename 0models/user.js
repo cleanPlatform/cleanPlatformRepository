@@ -15,7 +15,7 @@ class User extends Sequelize.Model {
           allowNull: false,
         },
         name: {
-          type: Sequelize.INTEGER(40),
+          type: Sequelize.STRING(40),
           allowNull: false,
         },
         nickname: {
@@ -53,7 +53,7 @@ class User extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: 'User',
-        tableName: 'users',
+        tableName: 'User',
         paranoid: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',

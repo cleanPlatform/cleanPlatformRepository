@@ -14,10 +14,6 @@ module.exports = {
         type: Sequelize.ENUM('admin', 'owner', 'guest'),
         allowNull: false,
       },
-      loginId: {
-        type: Sequelize.STRING(30),
-        allowNull: false,
-      },
       name: {
         type: Sequelize.STRING(30),
         allowNull: false,

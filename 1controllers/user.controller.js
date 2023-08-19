@@ -1,22 +1,16 @@
 const UserService = require('../2services/user.service');
+const ApiError = require('../utils/apierror');
 
 class UsersController {
-  constructor() {
-    this.userService = new UserService();
-  } // 회원가입 API
-  signupUser = async (req, res) => {
+  userService = new UserService();
+  // 회원가입 API
+  signup_controller = async (req, res) => {
+    console.log('회원가입 매서드 시작');
     try {
       const { permission, name, nickname, email, password, passwordConfirm, address, phoneNumber } =
         req.body;
-      console.log('회원가입=>', req.body);
-      if (!password || !nickname) {
-        return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
-      }
-      if (password !== passwordConfirm) {
-        return res.status(412).json({ message: '패스워드가 일치하지 않습니다.' });
-      }
 
-      await this.userService.signupUser(
+      await this.userService.signup_service(
         permission,
         name,
         nickname,
@@ -29,28 +23,60 @@ class UsersController {
 
       return res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
     } catch (err) {
-      console.log(err);
-      return res.status(err.status || 500).json({ message: err.message });
+      if (err instanceof ApiError) {
+        console.error(err.message);
+        return res.status(err.status).json({ message: err.message });
+      }
+
+      console.log('err :', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
-  // 로그인 API
-  //   loginUser = async (req, res) => {
-  //     try {
-  //       const { loginId, password } = req.body;
 
-  //       if (!loginId || !password) {
-  //         return res.status(412).json({ message: '입력되지 않은 정보가 있습니다.' });
-  //       }
+  //  로그인 매서드
+  login_controller = async (req, res) => {
+    console.log('로그인 매서드 시작');
+    const { email, password } = req.body;
+    try {
+      // const existRefreshToken = req.cookies.refreshToken;
+      // const { status, accesscookie, refreshcookie, message } =
+      //   await this.userService.loginUser_service(email, password, existRefreshToken);
 
-  //       const { loginToken } = await this.userService.loginUser(loginId, password);
+      // if (accesscookie && refreshcookie) {
+      //   res.cookie(accesscookie.name, accesscookie.token, {
+      //     expiresIn: accesscookie.expiresIn,
+      //   });
+      //   res.cookie(refreshcookie.name, refreshcookie.token, {
+      //     expiresIn: refreshcookie.expiresIn,
+      //   });
+      // }
+      // return res.status(200).json({ message });
 
-  //       res.cookie('Authorization', `Bearer ${loginToken}`);
-  //       return res.status(200).json({ message: '로그인에 성공하였습니다.', loginToken });
-  //     } catch (err) {
-  //       console.log(err);
-  //       return res.status(err.status || 500).json({ message: err.message });
-  //     }
-  //   };
+      // const { loginToken } = await this.userService.loginUser_service(email, password);
+      // // console.log('컨트롤러 res:', res);
+      // res.cookie('Authorization', `Bearer ${loginToken}`);
+      // return res.status(200).json({ message: '로그인에 성공했습니다.', loginToken });
+
+      // 다른코드
+
+      const token = await this.userService.loginUser_service(email, password);
+      res.header('Authorization', `Bearer ${token}`);
+      res.status(200).json({ message: '로그인에 성공했습니다.' });
+    } catch (err) {
+      console.log('컨트롤러 err :', err);
+      if (err instanceof ApiError) {
+        // console.error(err.message);
+        return res
+          .status(409)
+          .json({ message: '로그인에 실패했습니다. 메일과 비밀번호를 확인해주세요.' });
+      }
+      return res
+        .status(409)
+        .json({ message: '로그인에 실패했습니다. 메일과 비밀번호를 확인해주세요.' });
+      // return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
   //회원 정보 조회 API
   getUser = async (req, res) => {
     try {
@@ -63,17 +89,41 @@ class UsersController {
       return res.status(err.status || 500).json({ message: err.message });
     }
   };
-  //회원 정보 수정 API
-  updateUser = async (req, res) => {
-    try {
-      const { userId, password } = res.locals.user;
-      const { existPassword, newPassword, newPasswordConfirm, nickname } = req.body;
 
-      if (newPassword !== newPasswordConfirm) {
-        return res.status(412).json({ message: '새로운 비밀번호가 일치하지 않습니다.' });
+  //회원 정보 수정 API
+  updateUser_controller = async (req, res) => {
+    try {
+      const { authorization } = req.headers;
+      if (!authorization || !authorization.startsWith('Bearer ')) {
+        return res.status(401).json({ message: '로그인이 필요합니다.' });
       }
 
-      await this.userService.updateUser(userId, password, existPassword, newPassword, nickname);
+      const token = authorization.replace('Bearer ', '');
+      const decodedToken = await promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
+
+      const { email, password } = decodedToken; // JWT에서 디코딩된 값을 사용합니다.
+
+      const {
+        name,
+        nickname,
+        existPassword,
+        newPassword,
+        newPasswordConfirm,
+        address,
+        phoneNumber,
+      } = req.body;
+
+      await this.userService.updateUser_controller(
+        name,
+        nickname,
+        email,
+        password,
+        existPassword,
+        newPassword,
+        newPasswordConfirm,
+        address,
+        phoneNumber
+      );
 
       return res.status(200).json({ message: '프로필을 수정하였습니다.' });
     } catch (err) {

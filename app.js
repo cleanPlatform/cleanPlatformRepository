@@ -1,26 +1,26 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-
+const morgan = require('morgan');
 const cors = require('cors');
 
 require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 
 const router = require('./0router');
-// const { sequelize } = require('./0models');
+const { sequelize } = require('./0models');
 
-// sequelize
-//   .sync({ force: true })
-//   .then(() => {
-//     console.log('데이터베이스 연결 성공');
-//   })
-//   .catch((err) => {
-//     console.error(err);
-//   });
+sequelize
+  .sync({ force: true })
+  .then(() => {
+    console.log('데이터베이스 연결 성공');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
-app.use(express.json());
+app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
