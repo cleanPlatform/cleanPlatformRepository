@@ -6,3 +6,11 @@ npx seuquelize db:create
 
 npx sequelize-cli migration:generate --name createCompany
 
+// offer 담당 jh
+해야할 것 
+userid 및 companyId 추가 
+exist 예외처리 추가 및 다른 거 예외처리 추가
+throw로 예외처리 해보기 
+기본 로직 다시 생각해보기 
+
+====================================================

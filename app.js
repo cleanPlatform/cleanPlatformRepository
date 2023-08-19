@@ -9,7 +9,7 @@ const app = express();
 const PORT = 8080;
 
 const mainRouter = require('./0router');
-const { sequelize } = require('./0models');
+// const { sequelize } = require('./0models');
 
 sequelize
   .sync({ force: true })
