@@ -2,6 +2,7 @@ const UserRepository = require('../3repositories/user.repository');
 const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const util = require('util');
 
 const UserENUM = ['admin', 'owner', 'guest'];
 
@@ -96,32 +97,75 @@ class UserService {
   };
 
   //회원 정보 수정 API
-  updateUser_controller = async (
-    name,
-    nickname,
-    email,
-    password,
-    existPassword,
-    newPassword,
-    newPasswordConfirm,
-    address,
-    phoneNumber
-  ) => {
-    const match = await bcrypt.compare(existPassword, password);
-    if (!match) {
-      throw new ApiError('기존 비밀번호가 일치하지 않습니다.', 412);
-    }
-    const passwordReg = /^.{4,}$/;
-    if (newPassword) {
-      if (!passwordReg.test(newPassword)) {
-        throw new ApiError('비밀번호는 네자리 이상으로 해주세요', 412);
+  updateUser_service = async (token, updateData) => {
+    try {
+      const decodedToken = await util.promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
+      const { email, password } = decodedToken;
+
+      const {
+        name,
+        nickname,
+        existPassword,
+        newPassword,
+        newPasswordConfirm,
+        address,
+        phoneNumber,
+      } = updateData;
+
+      console.log(updateData);
+      console.log(newPassword);
+
+      const user = await this.userRepository.findUser(email);
+      if (!user) {
+        throw new ApiError('유효하지 않은 사용자입니다.', 401);
       }
+
+      const passwordMatch1 = await bcrypt.compare(existPassword, user.password);
+      if (!passwordMatch1) {
+        throw new ApiError('기존 비밀번호가 일치하지 않습니다.', 412);
+      }
+
+      if (newPassword !== newPasswordConfirm) {
+        throw new ApiError('새로운 비밀번호를 똑같이 두 번 입력해주세요.', 412);
+      }
+
+      const passwordReg = /^.{4,}$/;
+      if (newPassword) {
+        if (!passwordReg.test(newPassword)) {
+          throw new ApiError('비밀번호는 네자리 이상으로 해주세요', 412);
+        }
+      }
+
+      let hashPassword;
+      if (newPassword) {
+        hashPassword = await bcrypt.hash(newPassword, 6);
+      } else {
+        hashPassword = user.password;
+      }
+
+      // const hashPassword = await bcrypt.hash(newPassword, 6);
+
+      let updateDater = {};
+
+      const daterForUpdate = ['name', 'nickname', 'address', 'phoneNumber'];
+
+      for (const element of daterForUpdate) {
+        updateDater[element] = updateData[element] || user[element];
+      }
+
+      await this.userRepository.updateUser(
+        email,
+        name,
+        nickname,
+        hashPassword,
+        address,
+        phoneNumber
+      );
+    } catch (err) {
+      throw err;
     }
-
-    const hashPassword = newPassword ? await bcrypt.hash(newPassword, 6) : null;
-
-    await this.userRepository.updateUser(userId, hashPassword, nickname);
   };
+
   //회원 탈퇴 API
   deleteUser = async (userId, password, existPassword) => {
     const match = await bcrypt.compare(existPassword, password);

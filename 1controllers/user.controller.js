@@ -99,31 +99,8 @@ class UsersController {
       }
 
       const token = authorization.replace('Bearer ', '');
-      const decodedToken = await promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
 
-      const { email, password } = decodedToken; // JWT에서 디코딩된 값을 사용합니다.
-
-      const {
-        name,
-        nickname,
-        existPassword,
-        newPassword,
-        newPasswordConfirm,
-        address,
-        phoneNumber,
-      } = req.body;
-
-      await this.userService.updateUser_controller(
-        name,
-        nickname,
-        email,
-        password,
-        existPassword,
-        newPassword,
-        newPasswordConfirm,
-        address,
-        phoneNumber
-      );
+      await this.userService.updateUser_service(token, req.body);
 
       return res.status(200).json({ message: '프로필을 수정하였습니다.' });
     } catch (err) {
@@ -131,6 +108,7 @@ class UsersController {
       return res.status(err.status || 500).json({ message: err.message });
     }
   };
+
   //회원 탈퇴 API
   deleteUser = async (req, res) => {
     try {

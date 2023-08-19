@@ -10,10 +10,10 @@ class Offer extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        companyId: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-        },
+        // companyId: {
+        //   type: Sequelize.INTEGER,
+        //   allowNull: false,
+        // },
         offerNumber: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -32,11 +32,11 @@ class Offer extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: 'Offer',
-        tableName: 'offers',
+        tableName: 'Offer',
         paranoid: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',
-      },
+      }
     );
   }
 
