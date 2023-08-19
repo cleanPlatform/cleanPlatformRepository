@@ -8,8 +8,8 @@ require('dotenv').config();
 const app = express();
 const PORT = 8080;
 
-const mainRouter = require('./0router');
-// const { sequelize } = require('./0models');
+const router = require('./0router');
+const { sequelize } = require('./0models');
 
 sequelize
   .sync({ force: true })
@@ -26,7 +26,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use('/api', mainRouter);
+app.use('/api', router);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

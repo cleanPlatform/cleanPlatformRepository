@@ -2,7 +2,8 @@ const Sequelize = require('sequelize');
 
 class Reservation extends Sequelize.Model {
   static initiate(sequelize) {
-    Reservation.init(
+    // Company.init(
+    return super.init(
       {
         reservationId: {
           type: Sequelize.INTEGER,
@@ -18,16 +19,20 @@ class Reservation extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        date: {
-          type: Sequelize.DATE,
-          allowNull: true,
+        memo: {
+          type: Sequelize.STRING(300),
+          allowNull: false,
         },
-        extraRequests: {
+        state: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        cancelReason: {
+        reason: {
           type: Sequelize.STRING(200),
+          allowNull: false,
+        },
+        beginDate: {
+          type: Sequelize.DATE,
           allowNull: false,
         },
       },
@@ -36,8 +41,8 @@ class Reservation extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: 'Reservation',
-        tableName: 'reservations',
-        paranoid: true,
+        tableName: 'Reservation',
+        paranoid: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',
       }

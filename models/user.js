@@ -2,7 +2,8 @@ const Sequelize = require('sequelize');
 
 class User extends Sequelize.Model {
   static initiate(sequelize) {
-    User.init(
+    // User.init(
+    return super.init(
       {
         userId: {
           type: Sequelize.INTEGER,
@@ -10,8 +11,12 @@ class User extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        permission: {
-          type: Sequelize.ENUM('admin', 'owner', 'guest'),
+        roleId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
+        loginId: {
+          type: Sequelize.STRING(30),
           allowNull: false,
         },
         name: {

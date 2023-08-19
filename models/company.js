@@ -1,33 +1,30 @@
 const Sequelize = require('sequelize');
 
-class Reservation extends Sequelize.Model {
+class Company extends Sequelize.Model {
   static initiate(sequelize) {
-    Reservation.init(
+    Company.init(
+      // return super.init(
       {
-        reservationId: {
+        companyId: {
           type: Sequelize.INTEGER,
           allowNull: false,
           primaryKey: true,
           autoIncrement: true,
         },
-        offerId: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-        },
         userId: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        date: {
-          type: Sequelize.DATE,
-          allowNull: true,
-        },
-        extraRequests: {
-          type: Sequelize.INTEGER,
+        companyName: {
+          type: Sequelize.STRING(30),
           allowNull: false,
         },
-        cancelReason: {
-          type: Sequelize.STRING(200),
+        address: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        phoneNumber: {
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
       },
@@ -35,9 +32,9 @@ class Reservation extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: 'Reservation',
-        tableName: 'reservations',
-        paranoid: true,
+        modelName: 'Company',
+        tableName: 'Company',
+        paranoid: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',
       }
@@ -60,4 +57,4 @@ class Reservation extends Sequelize.Model {
   // }
 }
 
-module.exports = Reservation;
+module.exports = Company;
