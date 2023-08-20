@@ -42,8 +42,8 @@ class UserRepository {
   };
 
   //회원 탈퇴 API
-  deleteUser = async (userId) => {
-    await User.destroy({ where: { UserId: userId } });
+  resignUser_service = async (email) => {
+    await User.destroy({ where: { email: email } });
   };
 }
 
