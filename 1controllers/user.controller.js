@@ -38,27 +38,6 @@ class UsersController {
     console.log('로그인 매서드 시작');
     const { email, password } = req.body;
     try {
-      // const existRefreshToken = req.cookies.refreshToken;
-      // const { status, accesscookie, refreshcookie, message } =
-      //   await this.userService.loginUser_service(email, password, existRefreshToken);
-
-      // if (accesscookie && refreshcookie) {
-      //   res.cookie(accesscookie.name, accesscookie.token, {
-      //     expiresIn: accesscookie.expiresIn,
-      //   });
-      //   res.cookie(refreshcookie.name, refreshcookie.token, {
-      //     expiresIn: refreshcookie.expiresIn,
-      //   });
-      // }
-      // return res.status(200).json({ message });
-
-      // const { loginToken } = await this.userService.loginUser_service(email, password);
-      // // console.log('컨트롤러 res:', res);
-      // res.cookie('Authorization', `Bearer ${loginToken}`);
-      // return res.status(200).json({ message: '로그인에 성공했습니다.', loginToken });
-
-      // 다른코드
-
       const token = await this.userService.loginUser_service(email, password);
       res.header('Authorization', `Bearer ${token}`);
       res.status(200).json({ message: '로그인에 성공했습니다.' });
@@ -78,15 +57,30 @@ class UsersController {
   };
 
   //회원 정보 조회 API
-  getUser = async (req, res) => {
+  referUser_controller = async (req, res) => {
     try {
-      const user = res.locals.user;
-      delete user.dataValues.password;
+      const { authorization } = req.headers;
+      const { password } = req.body;
+      if (!authorization || !authorization.startsWith('Bearer ')) {
+        return res.status(401).json({ message: '로그인이 필요합니다.' });
+      }
 
-      return res.status(200).json({ user });
+      const token = authorization.replace('Bearer ', '');
+
+      const user = await this.userService.referUser_service(token, password);
+
+      const userInfo = user.userWithoutPassword;
+
+      // console.log('컨트롤러 user :\n', user);
+
+      if (user instanceof ApiError) {
+        return res.status(user.status).json({ message: user.message });
+      }
+
+      return res.status(200).json({ message: user.message, userInfo });
     } catch (err) {
-      console.log(err);
-      return res.status(err.status || 500).json({ message: err.message });
+      console.log('컨트롤러 캐치 err :', err);
+      return res.status(500).json({ message: err.message || err.toString() });
     }
   };
 
@@ -109,17 +103,18 @@ class UsersController {
     }
   };
 
-  //회원 탈퇴 API
-  deleteUser = async (req, res) => {
+  //  회원 탈퇴 매서드
+  resignUser_controller = async (req, res) => {
     try {
-      const { userId, password } = res.locals.user;
-      const { existPassword } = req.body;
-
-      if (!existPassword) {
-        return res.status(412).json({ errorMessage: '입력되지 않은 정보가 있습니다.' });
+      // const {password} = req.body
+      const { authorization } = req.headers;
+      if (!authorization || !authorization.startsWith('Bearer ')) {
+        return res.status(401).json({ message: '로그인이 필요합니다.' });
       }
 
-      await this.userService.deleteUser(userId, password, existPassword);
+      const token = authorization.replace('Bearer ', '');
+
+      await this.userService.resignUser_service(token, req.body);
 
       return res.status(200).json({ message: '회원 탈퇴 완료하였습니다.' });
     } catch (err) {

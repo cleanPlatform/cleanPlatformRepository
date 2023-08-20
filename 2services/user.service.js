@@ -8,7 +8,7 @@ const UserENUM = ['admin', 'owner', 'guest'];
 
 class UserService {
   userRepository = new UserRepository();
-  // 회원가입 API
+  //  회원가입 매서드
   signup_service = async (
     permission,
     name,
@@ -96,11 +96,42 @@ class UserService {
     }
   };
 
-  //회원 정보 수정 API
+  //  회원 정보 조회 매서드
+  referUser_service = async (token, password) => {
+    try {
+      const decodedToken = await util.promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
+      const { email } = decodedToken;
+
+      const user = await this.userRepository.findUser(email);
+      if (!user) {
+        throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
+      }
+
+      const passwordMatch1 = await bcrypt.compare(password, user.password);
+      if (!passwordMatch1) {
+        throw new Error('비밀번호가 일치하지 않습니다.');
+        // throw new ApiError('비밀번호가 일치하지 않습니다.', 412);
+      }
+
+      const message = '조회에 성공하였습니다.';
+
+      const userWithoutPassword = { ...user.dataValues };
+      delete userWithoutPassword.password;
+
+      // console.log(user);
+
+      return { message, userWithoutPassword };
+    } catch (err) {
+      console.log('서비스 err :', err);
+      throw new Error(err);
+    }
+  };
+
+  //  회원 정보 수정 매서드
   updateUser_service = async (token, updateData) => {
     try {
       const decodedToken = await util.promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
-      const { email, password } = decodedToken;
+      const { email } = decodedToken;
 
       const {
         name,
@@ -112,12 +143,9 @@ class UserService {
         phoneNumber,
       } = updateData;
 
-      console.log(updateData);
-      console.log(newPassword);
-
       const user = await this.userRepository.findUser(email);
       if (!user) {
-        throw new ApiError('유효하지 않은 사용자입니다.', 401);
+        throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
       }
 
       const passwordMatch1 = await bcrypt.compare(existPassword, user.password);
@@ -166,14 +194,29 @@ class UserService {
     }
   };
 
-  //회원 탈퇴 API
-  deleteUser = async (userId, password, existPassword) => {
-    const match = await bcrypt.compare(existPassword, password);
-    if (!match) {
-      throw new ApiError('비밀번호가 일치하지 않습니다.', 412);
-    }
+  //  회원 탈퇴 API
+  resignUser_service = async (token, deleteData) => {
+    try {
+      const { password } = deleteData;
 
-    await this.userRepository.deleteUser(userId);
+      const decodedToken = await util.promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
+      const { email } = decodedToken;
+
+      const user = await this.userRepository.findUser(email);
+      if (!user) {
+        throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        throw new Error('비밀번호가 일치하지 않습니다.');
+      }
+
+      await this.userRepository.resignUser_service(email);
+    } catch (err) {
+      console.log('서비스 err :', err);
+      throw new Error(err);
+    }
   };
 }
 
