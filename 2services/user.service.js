@@ -3,7 +3,7 @@ const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const util = require('util');
-const permissionCache = require('../cache/permissionCache');
+const permissionCache = require("../cache/permissionCache");
 
 const UserENUM = ['admin', 'owner', 'guest'];
 
@@ -45,13 +45,6 @@ class UserService {
       throw new ApiError(409, '중복된 이메일 입니다.');
     }
 
-    const validPhoneNumberCheck1 = /^\d{3}-\d{4}-\d{4}$/;
-    const validPhoneNumberCheck2 = /^\d{3}-\d{3}-\d{4}$/;
-
-    if (!(validPhoneNumberCheck1.test(phoneNumber) || validPhoneNumberCheck2.test(phoneNumber))) {
-      throw new ApiError(412, '핸드폰 번호의 형식이 올바르지 않습니다.');
-    }
-
     //암호화
     password = await bcrypt.hash(password, 6);
 
@@ -91,16 +84,11 @@ class UserService {
       // console.log('isValidPassword :', isValidPassword);
 
       // 토큰생성
-      console.log('🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗');
-      console.log(`email: ${isExistUser.email}  userId: ${isExistUser.userId}`);
-      const token = jwt.sign(
-        { email: isExistUser.email, userId: isExistUser.userId },
-        process.env.COOKIE_SECRET,
-        {
-          expiresIn: process.env.JWT_EXPIRE_TIME,
-        }
-      );
-      console.log(isExistUser);
+      let token = jwt.sign({ email: isExistUser.email, userId: isExistUser.userId }, process.env.COOKIE_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE_TIME,
+      });
+      const TYPE = "Bearer";
+      token = TYPE + " " + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
       return token;

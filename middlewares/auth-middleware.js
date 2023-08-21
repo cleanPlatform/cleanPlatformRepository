@@ -36,20 +36,23 @@ const permissionCache = require('../cache/permissionCache');
 
 exports.authorized = async (req, res, next) => {
   const { authorization } = req.headers;
+  console.log(authorization);
 
   if (!authorization) {
     return res.status(403).json({ errorMessage: '권한이 존재하지 않습니다.' });
   }
   const [authType, authToken] = (authorization ?? '').split(' ');
+  console.log(authType);
+  console.log(authToken);
 
   if (authType !== 'Bearer' || !authToken) {
     return res.status(403).json({ errorMessage: '로그인이 필요한 기능입니다' });
   }
 
   try {
-    const { userId } = jwt.verify(authToken, process.env.COOKIE_SECRET);
-    console.log(`user: ${userId}`);
-    res.locals.userId = user.userId;
+    const { userId, email } = jwt.verify(authToken, process.env.COOKIE_SECRET);
+    res.locals.userId = userId;
+    res.locals.email = email;
     next();
   } catch (error) {
     console.log(error);
@@ -57,35 +60,35 @@ exports.authorized = async (req, res, next) => {
   }
 };
 
-exports.isLoggedIn = async (req, res, next) => {
-  const { authorization } = req.headers;
+// exports.isLoggedIn = async (req, res, next) => {
+//   const { authorization } = req.headers;
 
-  if (!authorization) {
-    res.locals.isLoggedIn = false;
-    next();
-    return;
-  }
+//   if (!authorization) {
+//     res.locals.isLoggedIn = false;
+//     next();
+//     return;
+//   }
 
-  const [authType, authToken] = (authorization ?? '').split(' ');
+//   const [authType, authToken] = (authorization ?? '').split(' ');
 
-  if (!authorization || authType !== 'Bearer' || !authToken) {
-    res.locals.isLoggedIn = false;
-    next();
-    return;
-  }
+//   if (!authorization || authType !== 'Bearer' || !authToken) {
+//     res.locals.isLoggedIn = false;
+//     next();
+//     return;
+//   }
 
-  try {
-    const { user } = jwt.verify(authToken, process.env.COOKIE_SECRET);
+//   try {
+//     const { user } = jwt.verify(authToken, process.env.COOKIE_SECRET);
 
-    res.locals.isLoggedIn = true;
-    res.locals.userId = user.userId;
-    next();
-  } catch (err) {
-    console.error(err);
-    res.locals.isLoggedIn = false;
-    next();
-  }
-};
+//     res.locals.isLoggedIn = true;
+//     res.locals.userId = user.userId;
+//     next();
+//   } catch (err) {
+//     console.error(err);
+//     res.locals.isLoggedIn = false;
+//     next();
+//   }
+// };
 
 exports.hasMinimumPermission = (permission) => {
   return async (req, res, next) => {
