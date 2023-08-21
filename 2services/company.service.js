@@ -4,20 +4,22 @@ const ApiError = require('../apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-
 class CompanyService {
   companyRepository = new CompanyRepository();
 
   // 회사 등록
   addCompany = async (userId, companyName, address, phoneNumber) => {
+    console.log('companyName :', companyName);
     if (!companyName) {
       throw new Error('업체명을 입력해주세요.');
-    } else if (!address) {
+    }
+    if (!address) {
       throw new Error('업체 주소를 입력해주세요.');
-    } else if (!phoneNumber) {
+    }
+    if (!phoneNumber) {
       throw new Error('업체 연락처를 입력해주세요.');
     }
-
+    console.log('=>', companyName, address, phoneNumber);
     try {
       const addCompanyData = await this.companyRepository.addCompany(
         userId,
@@ -115,7 +117,6 @@ class CompanyService {
       throw new Error(error);
     }
   };
-
 }
 
 module.exports = CompanyService;

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const cacheRouter = require('../cache');
+const cacheRouter = require('./cache');
 
 const defaultRoutes = [
   {
     path: '/cache',
-    route: cacheRotuer,
+    route: cacheRouter,
   },
 ];
 

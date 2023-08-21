@@ -3,7 +3,7 @@ const router = express.Router();
 
 const authRouter = require('./auth.router');
 const userRouter = require('./user.router');
-// const companyRouter = require('./company.router');
+const companyRouter = require('./company.router');
 const offerRouter = require('./offer.router');
 // const reservationRouter = require('./reservation.router');
 // const reviewRouter = require('./review.router');
@@ -19,10 +19,10 @@ const defaultRoutes = [
     route: userRouter,
   },
 
-  //   {
-  //     path: '/company',
-  //     route: companyRouter,
-  //   },
+  {
+    path: '/company',
+    route: companyRouter,
+  },
   {
     path: '/offer',
     route: offerRouter,

@@ -34,7 +34,7 @@
 const jwt = require('jsonwebtoken');
 const permissionCache = require('../cache/permissionCache');
 
-exports.authorizated = async (req, res, next) => {
+exports.authorized = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -47,7 +47,8 @@ exports.authorizated = async (req, res, next) => {
   }
 
   try {
-    const { user } = jwt.verify(authToken, process.env.COOKIE_SECRET);
+    const { userId } = jwt.verify(authToken, process.env.COOKIE_SECRET);
+    console.log(`user: ${userId}`);
     res.locals.userId = user.userId;
     next();
   } catch (error) {
