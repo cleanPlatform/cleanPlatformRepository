@@ -109,10 +109,12 @@ exports.hasMinimumPermission = (permission) => {
         owner: 2,
         guest: 1,
       };
-
+      console.log('!!!!!!!!!!!!!!!!!!!!');
       if (grade[userPermission] >= grade[permission]) {
-        next();
+        return next();
       }
+
+      return res.status(400).json({ message: '허가된 유저만 사용가능합니다.' });
     } catch (err) {
       console.error(err);
       res.status(400).json({ errorMessage: '잘못된 접근입니다.' });
