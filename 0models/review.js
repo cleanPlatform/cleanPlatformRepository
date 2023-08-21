@@ -40,20 +40,12 @@ class Review extends Sequelize.Model {
     );
   }
 
-  // static associate(db) {
-  //   db.Board.belongsTo(db.User, {
-  //     foreignKey: 'ownerId',
-  //     targetKey: 'userId',
-  //   });
-  //   db.Board.hasMany(db.BoardGroup, {
-  //     foreignKey: 'boardId',
-  //     sourceKey: 'boardId',
-  //   });
-  //   db.Board.hasMany(db.Column, {
-  //     foreignKey: 'boardId',
-  //     sourceKey: 'boardId',
-  //   });
-  // }
+  static associate(db) {
+    db.Review.belongsTo(db.User, {
+      foreignKey: 'userId',
+      targetKey: 'userId',
+    });
+  }
 }
 
 module.exports = Review;
