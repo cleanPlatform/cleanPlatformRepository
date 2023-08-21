@@ -9,6 +9,7 @@ const app = express();
 const PORT = 8080;
 
 const router = require('./0router');
+const devRouter = require('./devRouter');
 const { sequelize } = require('./0models');
 
 sequelize
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use('/api', router);
+app.use('/devapi', devRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
