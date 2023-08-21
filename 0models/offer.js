@@ -40,20 +40,16 @@ class Offer extends Sequelize.Model {
     );
   }
 
-  // static associate(db) {
-  //   db.Board.belongsTo(db.User, {
-  //     foreignKey: 'ownerId',
-  //     targetKey: 'userId',
-  //   });
-  //   db.Board.hasMany(db.BoardGroup, {
-  //     foreignKey: 'boardId',
-  //     sourceKey: 'boardId',
-  //   });
-  //   db.Board.hasMany(db.Column, {
-  //     foreignKey: 'boardId',
-  //     sourceKey: 'boardId',
-  //   });
-  // }
+  static associate(db) {
+    db.Offer.belongsTo(db.Company, {
+      foreignKey: 'companyId',
+      targetKey: 'companyId',
+    });
+    db.Offer.hasMany(db.Reservation, {
+      foreignKey: 'offerId',
+      sourceKey: 'offerId',
+    });
+  }
 }
 
 module.exports = Offer;

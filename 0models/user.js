@@ -61,20 +61,16 @@ class User extends Sequelize.Model {
     );
   }
 
-  //   static associate(models) {
-  //     this.belongsTo(db.User, {
-  //       foreignKey: 'ownerId',
-  //       targetKey: 'userId',
-  //     });
-  //     db.Board.hasMany(db.Company, {
-  //       foreignKey: 'userId',
-  //       sourceKey: 'userId',
-  //     });
-  //     db.Board.hasMany(db.Role, {
-  //       foreignKey: 'userId',
-  //       sourceKey: 'roleId',
-  //     });
-  //   }
+  static associate(db) {
+    db.User.hasMany(db.Company, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+    db.User.hasMany(db.Review, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+  }
 }
 
 module.exports = User;
