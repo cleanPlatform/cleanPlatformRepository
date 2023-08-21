@@ -5,19 +5,24 @@ class OfferController {
 
   // 업체 서비스 생성
   createOffer = async (req, res, next) => {
-    const { offerName, offerNumber, price } = req.body;
+    const { offerName, offerOrder, price } = req.body;
 
-    //const { companyId } = req.params;
+    const { companyId } = req.params;
 
     // const userId = res.locals.user
 
-    const { status, message } = await this.offerService.createOffer(offerName, offerNumber, price);
+    const { status, message } = await this.offerService.createOffer(
+      offerName,
+      offerOrder,
+      price,
+      companyId
+    );
     res.status(status).json(message);
   };
 
   // 업체 서비스 수정
   putOffer = async (req, res, next) => {
-    const { offerName, offerNumber, price } = req.body;
+    const { offerName, offerOrder, price } = req.body;
 
     const { companyId, offerId } = req.params;
 
@@ -26,7 +31,7 @@ class OfferController {
     const { status, message } = await this.offerService.updateOffer(
       offerId,
       offerName,
-      offerNumber,
+      offerOrder,
       price
     );
     res.status(status).json(message);

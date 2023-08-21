@@ -1,5 +1,5 @@
 // const jwt = require('jsonwebtoken');
-// const {User} = require('../models');
+// const { User } = require('../models');
 
 // // 사용자 인증 미들웨어
 // module.exports = async (req, res, next) => {
@@ -48,8 +48,8 @@ exports.authorized = async (req, res, next) => {
 
   try {
     const { userId } = jwt.verify(authToken, process.env.COOKIE_SECRET);
-    console.log(`user: ${userId}`);
-    res.locals.userId = user.userId;
+    console.log(`userId: ${userId}`);
+    res.locals.userId = userId;
     next();
   } catch (error) {
     console.log(error);
