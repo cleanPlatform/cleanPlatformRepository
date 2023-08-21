@@ -51,6 +51,7 @@ class PermissionCache {
   permissionCache = new NodeCache();
 
   setPermissionCache = async (userId) => {
+    console.log('캐시 불러오기');
     try {
       const user = await User.findOne({ where: { userId } });
 
@@ -64,7 +65,7 @@ class PermissionCache {
     }
   };
 
-  getPermissionCache(userId) {
+  getPermissionCache = (userId) => {
     const data = this.permissionCache.get(`permission${userId}`);
 
     if (!data) {
@@ -72,7 +73,7 @@ class PermissionCache {
     }
 
     return data;
-  }
+  };
 
   getCache = () => {
     const arr = [];
@@ -86,7 +87,7 @@ class PermissionCache {
       return arr;
     }
 
-    for (key of this.permissionCache.keys()) {
+    for (const key of this.permissionCache.keys()) {
       arr.push({ cacheKey: key, value: this.permissionCache.get(key) });
     }
 
