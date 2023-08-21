@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 
 class CompanyRepository {
   // 회사 등록
-  addCompany = async (companyName, address, phoneNumber) => {
+  addCompany = async (userId, companyName, address, phoneNumber) => {
     const addCompanyData = await Company.create({
       userId: userId,
       companyName: companyName,

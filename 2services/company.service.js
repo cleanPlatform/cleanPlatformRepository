@@ -1,6 +1,6 @@
 const CompanyRepository = require('../3repositories/company.repository');
 
-const ApiError = require('../apierror');
+const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -19,26 +19,22 @@ class CompanyService {
     if (!phoneNumber) {
       throw new Error('업체 연락처를 입력해주세요.');
     }
-    console.log('=>', companyName, address, phoneNumber);
-    try {
-      const addCompanyData = await this.companyRepository.addCompany(
-        userId,
-        companyName,
-        address,
-        phoneNumber
-      );
+    console.log('userId: ', userId);
+    const addCompanyData = await this.companyRepository.addCompany(
+      userId,
+      companyName,
+      address,
+      phoneNumber
+    );
 
-      return {
-        companyId: addCompanyData.companyId,
-        userId: addCompanyData.userId,
-        companyName: addCompanyData.companyName,
-        address: addCompanyData.address,
-        phoneNumber: addCompanyData.phoneNumber,
-        createdAt: addCompanyData.createdAt,
-      };
-    } catch (error) {
-      throw new Error(error);
-    }
+    return {
+      companyId: addCompanyData.companyId,
+      userId: addCompanyData.userId,
+      companyName: addCompanyData.companyName,
+      address: addCompanyData.address,
+      phoneNumber: addCompanyData.phoneNumber,
+      // createdAt: addCompanyData.createdAt,
+    };
   };
 
   // 회사 정보 조회 (전체)
