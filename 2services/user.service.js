@@ -3,6 +3,7 @@ const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const util = require('util');
+const permissionCache = require("../cache/permissionCache");
 
 const UserENUM = ['admin', 'owner', 'guest'];
 
@@ -86,6 +87,7 @@ class UserService {
       const token = jwt.sign({ email: isExistUser.email }, process.env.COOKIE_SECRET, {
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
+      permissionCache.setPermissionCache(userId);
 
       return token;
     } catch (err) {
