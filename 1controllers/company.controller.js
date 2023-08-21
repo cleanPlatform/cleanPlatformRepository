@@ -9,13 +9,8 @@ class CompanyController {
 
   // 회사 등록
   createCompany = async (req, res) => {
-    console.log('회사등록 시작');
-    const userId = res.locals.userId;
+    const { userId } = res.locals.userId;
     const { companyName, address, phoneNumber } = req.body;
-
-    console.log(
-      `userid: ${userId} companyName: ${companyName}, address: ${address}, phoneNumber: ${phoneNumber}`
-    );
 
     try {
       const addCompanyData = await this.companyService.addCompany(
@@ -27,7 +22,6 @@ class CompanyController {
 
       return res.status(200).json({ data: addCompanyData, message: '업체 등록이 완료되었습니다.' });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({ errorMessage: error.message });
     }
   };
@@ -77,6 +71,7 @@ class CompanyController {
       return res.status(400).json({ errorMessage: error.message });
     }
   };
+
 }
 
 module.exports = CompanyController;

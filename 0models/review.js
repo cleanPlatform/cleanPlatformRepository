@@ -18,7 +18,7 @@ class Review extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        comment: {
+        content: {
           type: Sequelize.STRING(200),
           allowNull: false,
         },
