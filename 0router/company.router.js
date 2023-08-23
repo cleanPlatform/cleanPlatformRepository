@@ -4,10 +4,15 @@ const router = express.Router();
 const CompanyController = require('../1controllers/company.controller');
 const companyController = new CompanyController();
 
-const { authorized } = require('../middlewares/auth-middleware');
+const { authorized, hasMinimumPermission } = require('../middlewares/auth-middleware');
 
 // 회사 등록
-router.post('/companies', authorized, companyController.createCompany);
+router.post(
+  '/companies',
+  authorized,
+  hasMinimumPermission('owner'),
+  companyController.createCompany
+);
 
 // 회사 정보 조회
 router.get('/companies', companyController.getCompanyInfo);

@@ -23,7 +23,7 @@ class Company extends Sequelize.Model {
           allowNull: false,
         },
         phoneNumber: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.STRING(15),
           allowNull: false,
         },
       },

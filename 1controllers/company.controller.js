@@ -1,21 +1,16 @@
 const CompanyService = require('../2services/company.service');
 
-const ApiError = require('../apierror');
+const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 class CompanyController {
   companyService = new CompanyService();
 
   // 회사 등록
   createCompany = async (req, res) => {
-    console.log('회사등록 시작');
-    const userId = res.locals.userId;
     const { companyName, address, phoneNumber } = req.body;
-
-    console.log(
-      `userid: ${userId} companyName: ${companyName}, address: ${address}, phoneNumber: ${phoneNumber}`
-    );
+    const userId = res.locals.userId;
 
     try {
       const addCompanyData = await this.companyService.addCompany(
@@ -28,7 +23,7 @@ class CompanyController {
       return res.status(200).json({ data: addCompanyData, message: '업체 등록이 완료되었습니다.' });
     } catch (error) {
       console.error(error);
-      return res.status(400).json({ errorMessage: error.message });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 

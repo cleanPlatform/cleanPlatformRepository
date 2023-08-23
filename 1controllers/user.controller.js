@@ -39,8 +39,8 @@ class UsersController {
     const { email, password } = req.body;
     try {
       const token = await this.userService.loginUser_service(email, password);
-      res.header('Authorization', `Bearer ${token}`);
-      res.status(200).json({ message: '로그인에 성공했습니다.' });
+      res.header('Authorization', token);
+      res.status(200).json({ message: '로그인에 성공했습니다.', token });
     } catch (err) {
       console.log('컨트롤러 err :', err);
       if (err instanceof ApiError) {
