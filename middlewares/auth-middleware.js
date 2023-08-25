@@ -36,7 +36,6 @@ const permissionCache = require('../cache/permissionCache');
 
 exports.authorized = async (req, res, next) => {
   const { authorization } = req.headers;
-  console.log(authorization);
 
   if (!authorization) {
     return res.status(403).json({ errorMessage: '권한이 존재하지 않습니다.' });

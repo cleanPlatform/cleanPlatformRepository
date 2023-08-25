@@ -3,7 +3,7 @@ const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const util = require('util');
-const permissionCache = require("../cache/permissionCache");
+const permissionCache = require('../cache/permissionCache');
 
 const UserENUM = ['admin', 'owner', 'guest'];
 
@@ -84,11 +84,15 @@ class UserService {
       // console.log('isValidPassword :', isValidPassword);
 
       // 토큰생성
-      let token = jwt.sign({ email: isExistUser.email, userId: isExistUser.userId }, process.env.COOKIE_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE_TIME,
-      });
-      const TYPE = "Bearer";
-      token = TYPE + " " + token;
+      let token = jwt.sign(
+        { email: isExistUser.email, userId: isExistUser.userId },
+        process.env.COOKIE_SECRET,
+        {
+          // expiresIn: process.env.JWT_EXPIRE_TIME,
+        }
+      );
+      const TYPE = 'Bearer';
+      token = TYPE + ' ' + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
       return token;

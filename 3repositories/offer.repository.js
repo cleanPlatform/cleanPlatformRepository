@@ -2,12 +2,14 @@ const { Offer, sequelize } = require('../0models');
 
 class OfferRepository {
   // 업체 서비스 생성
-  createOffer = async (offerName, offerNumber, price) => {
+  createOffer = async (userId, companyId, offerName, offerNumber, price) => {
     const t = await sequelize.transaction();
 
     try {
       const createRepository = await Offer.create(
         {
+          userId,
+          companyId,
           offerName,
           offerNumber,
           price,
@@ -23,15 +25,8 @@ class OfferRepository {
     }
   };
 
-  // 업체 조회
-  // findOffer = async (companyId) =>{
-  //   const findcompany = await Offer.findOne({where:{companyId}})
-  //   return findcompany
-  // }
-
   // 업체 서비스 수정
-
-  updateOffer = async (offerId, offerName, offerNumber, price) => {
+  updateOffer = async (offerId, companyId, userId, offerName, offerNumber, price) => {
     const t = await sequelize.transaction();
 
     try {
@@ -70,7 +65,7 @@ class OfferRepository {
   };
 
   // 업체 서비스 삭제
-  destroyOffer = async (offerId) => {
+  destroyOffer = async (offerId, userId) => {
     const t = await sequelize.transaction();
 
     try {

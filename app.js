@@ -12,14 +12,14 @@ const router = require('./0router');
 const devRouter = require('./devRouter');
 const { sequelize } = require('./0models');
 
-sequelize
-  .sync({ force: true })
-  .then(() => {
-    console.log('데이터베이스 연결 성공');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+// sequelize
+//   .sync({ force: true })
+//   .then(() => {
+//     console.log('데이터베이스 연결 성공');
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });
 
 app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));

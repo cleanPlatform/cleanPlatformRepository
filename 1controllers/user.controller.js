@@ -37,8 +37,10 @@ class UsersController {
   login_controller = async (req, res) => {
     console.log('로그인 매서드 시작');
     const { email, password } = req.body;
+
     try {
       const token = await this.userService.loginUser_service(email, password);
+
       res.header('Authorization', token);
       res.status(200).json({ message: '로그인에 성공했습니다.', token });
     } catch (err) {
