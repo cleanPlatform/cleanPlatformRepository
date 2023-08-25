@@ -3,6 +3,8 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const nunjucks = require('nunjucks');
+
 require('dotenv').config();
 
 const app = express();
@@ -21,6 +23,14 @@ const { sequelize } = require('./0models');
 //     console.error(err);
 //   });
 
+app.set('view engine', 'html');
+
+nunjucks.configure('template', {
+  autoescape: true,
+  express: app,
+  watch: true,
+});
+
 app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));
 
@@ -29,6 +39,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use('/api', router);
 app.use('/devapi', devRouter);
+``;
+app.get('/', (req, res) => {
+  res.render('main.html', {
+    // error : __dirname + '/test.html'
+    // error : path.join(__dirname, 'test.html')
+    // complete : path.join(__dirname, 'template', 'test.html')
+    // complete : test.html or ./test.html
+    name: 'minjun',
+    age: 99,
+  });
+});
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

@@ -7,7 +7,12 @@ const companyController = new CompanyController();
 const { authorized, hasMinimumPermission } = require('../middlewares/auth-middleware');
 
 // 회사 등록
-router.post('/companies', authorized, hasMinimumPermission("owner"), companyController.createCompany);
+router.post(
+  '/companies',
+  authorized,
+  hasMinimumPermission('owner'),
+  companyController.createCompany
+);
 
 // 회사 정보 조회
 router.get('/companies', companyController.getCompanyInfo);

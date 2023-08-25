@@ -20,6 +20,13 @@ class CompanyRepository {
     return await Company.findAll();
   };
 
+  // userId로 회사 조회
+  companyId = async (userId) => {
+    return await Company.findOne({
+      where: { userId: userId },
+    });
+  };
+
   // 회사 번호로 조회
   searchOneCompany = async (companyId) => {
     return await Company.findOne({
