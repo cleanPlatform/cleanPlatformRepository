@@ -7,27 +7,125 @@ class ReservationController {
   reservationService = new ReservationService();
 
   createReservation = async (req, res, next) => {
-    console.log('create reservation!!');
+    const { offerId, date, extraRequests } = req.body;
+    const { companyId } = req.params;
+    const userId = res.locals.userId;
 
-    return res.status(200).json({ message: '!!!' });
+    // companyId가 있는지 없는지 확인하는 작업도 필요함.
+    try {
+      await this.reservationService.createReservation(
+        userId,
+        offerId,
+        companyId,
+        date,
+        extraRequests
+      );
+
+      return res.status(201).send();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
   };
 
-  getReservation = async (req, res, next) => {
-    console.log('get reservation!!');
+  // 회사 예약 내역 확인
+  getCompanyReservations = async (req, res, next) => {
+    const { companyId } = req.params;
 
-    return res.status(200).json({ message: '!!!' });
+    try {
+      const result = await this.reservationService.getCompanyReservations(companyId);
+
+      return res.status(201).json({ data: result });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+  // 사용자 예약 내역 확인
+  getUserReservations = async (req, res, next) => {
+    const userId = res.locals.userId;
+
+    try {
+      await this.reservationService.getReservations(userId);
+
+      return res.status(201).send();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
   };
 
   editReservation = async (req, res, next) => {
-    console.log('edit reservation!!');
+    const { offerId, date, extraRequests } = req.body;
+    const { reservationId } = req.params;
+    const userId = res.locals.userId;
 
-    return res.status(200).json({ message: '!!!' });
+    try {
+      await this.reservationService.editReservation(
+        userId,
+        reservationId,
+        offerId,
+        date,
+        extraRequests
+      );
+
+      return res.status(201).send();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
   };
 
   cancelReservation = async (req, res, next) => {
-    console.log('cancel reservation!!');
+    const { cancelReason } = req.body;
+    const { reservationId } = req.params;
+    const userId = res.locals.userId;
+    const permission = res.locals.permission;
 
-    return res.status(200).json({ message: '!!!' });
+    try {
+      await this.reservationService.cancelReservation(
+        userId,
+        reservationId,
+        cancelReason,
+        permission
+      );
+
+      return res.status(201).send();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
   };
 }
 
