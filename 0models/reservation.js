@@ -27,12 +27,12 @@ class Reservation extends Sequelize.Model {
           allowNull: true,
         },
         extraRequests: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.STRING(150),
           allowNull: false,
         },
         cancelReason: {
           type: Sequelize.STRING(200),
-          allowNull: false,
+          allowNull: true,
         },
       },
       {

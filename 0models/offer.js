@@ -32,7 +32,7 @@ class Offer extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: 'Offer',
-        tableName: 'Offer',
+        tableName: 'offers',
         paranoid: false,
         charset: 'utf8',
         collate: 'utf8_general_ci',
@@ -45,10 +45,10 @@ class Offer extends Sequelize.Model {
       foreignKey: 'companyId',
       targetKey: 'companyId',
     });
-    db.Offer.hasMany(db.Reservation, {
-      foreignKey: 'offerId',
-      sourceKey: 'offerId',
-    });
+    // db.Offer.hasMany(db.Reservation, {
+    //   foreignKey: 'offerId',
+    //   sourceKey: 'offerId',
+    // });
   }
 }
 
