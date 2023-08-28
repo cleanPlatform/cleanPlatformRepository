@@ -1,8 +1,22 @@
 const Sequelize = require('sequelize');
 
 class Reservation extends Sequelize.Model {
+  static associate(db) {
+    db.Reservation.belongsTo(db.User, {
+      foreignKey: 'ownerId',
+      targetKey: 'userId',
+    });
+    db.Reservation.belongsTo(db.Offer, {
+      foreignKey: 'offerId',
+      sourceKey: 'offerId',
+    });
+    // db.v.hasMany(db.Column, {
+    //   foreignKey: 'boardId',
+    //   sourceKey: 'boardId',
+    // });
+  }
   static initiate(sequelize) {
-    Reservation.init(
+    super.init(
       {
         reservationId: {
           type: Sequelize.INTEGER,
@@ -19,8 +33,8 @@ class Reservation extends Sequelize.Model {
           allowNull: false,
         },
         companyId: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
+          type: Sequelize.INTEGER,
+          allowNull: false,
         },
         date: {
           type: Sequelize.DATE,
@@ -40,28 +54,13 @@ class Reservation extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: 'Reservation',
-        tableName: 'reservations',
+        tableName: 'Reservation',
         paranoid: true,
         charset: 'utf8',
         collate: 'utf8_general_ci',
       }
     );
   }
-
-  // static associate(db) {
-  //   db.Board.belongsTo(db.User, {
-  //     foreignKey: 'ownerId',
-  //     targetKey: 'userId',
-  //   });
-  //   db.Board.hasMany(db.BoardGroup, {
-  //     foreignKey: 'boardId',
-  //     sourceKey: 'boardId',
-  //   });
-  //   db.Board.hasMany(db.Column, {
-  //     foreignKey: 'boardId',
-  //     sourceKey: 'boardId',
-  //   });
-  // }
 }
 
 module.exports = Reservation;
