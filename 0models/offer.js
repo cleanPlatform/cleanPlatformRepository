@@ -1,8 +1,19 @@
 const Sequelize = require('sequelize');
 
 class Offer extends Sequelize.Model {
+  static associate(db) {
+    db.Offer.belongsTo(db.Company, {
+      foreignKey: 'companyId',
+      targetKey: 'companyId',
+    });
+    db.Offer.hasMany(db.Reservation, {
+      foreignKey: 'offerId',
+      sourceKey: 'offerId',
+    });
+  }
+
   static initiate(sequelize) {
-    Offer.init(
+    super.init(
       {
         offerId: {
           type: Sequelize.INTEGER,
@@ -10,10 +21,10 @@ class Offer extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        // companyId: {
-        //   type: Sequelize.INTEGER,
-        //   allowNull: false,
-        // },
+        companyId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
         offerNumber: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -38,17 +49,6 @@ class Offer extends Sequelize.Model {
         collate: 'utf8_general_ci',
       }
     );
-  }
-
-  static associate(db) {
-    db.Offer.belongsTo(db.Company, {
-      foreignKey: 'companyId',
-      targetKey: 'companyId',
-    });
-    db.Offer.hasMany(db.Reservation, {
-      foreignKey: 'offerId',
-      sourceKey: 'offerId',
-    });
   }
 }
 

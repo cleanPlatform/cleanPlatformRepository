@@ -1,8 +1,22 @@
 const Sequelize = require('sequelize');
 
 class User extends Sequelize.Model {
+  static associate(db) {
+    db.User.hasMany(db.Company, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+    db.User.hasMany(db.Review, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+    db.User.hasMany(db.Reservation, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+    });
+  }
   static initiate(sequelize) {
-    User.init(
+    super.init(
       {
         userId: {
           type: Sequelize.INTEGER,
@@ -59,17 +73,6 @@ class User extends Sequelize.Model {
         collate: 'utf8_general_ci',
       }
     );
-  }
-
-  static associate(db) {
-    db.User.hasMany(db.Company, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
-    });
-    db.User.hasMany(db.Review, {
-      foreignKey: 'userId',
-      sourceKey: 'userId',
-    });
   }
 }
 
