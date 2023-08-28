@@ -1,8 +1,14 @@
 const Sequelize = require('sequelize');
 
 class Review extends Sequelize.Model {
+  static associate(db) {
+    db.Review.belongsTo(db.User, {
+      foreignKey: 'userId',
+      targetKey: 'userId',
+    });
+  }
   static initiate(sequelize) {
-    Review.init(
+    super.init(
       {
         reviewId: {
           type: Sequelize.INTEGER,
@@ -38,13 +44,6 @@ class Review extends Sequelize.Model {
         collate: 'utf8_general_ci',
       }
     );
-  }
-
-  static associate(db) {
-    db.Review.belongsTo(db.User, {
-      foreignKey: 'userId',
-      targetKey: 'userId',
-    });
   }
 }
 
