@@ -1,14 +1,18 @@
 const UserRepository = require('../3repositories/user.repository');
+const CompanyRepository = require('../3repositories/company.repository');
+
 const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const util = require('util');
-const permissionCache = require("../cache/permissionCache");
+const permissionCache = require('../cache/permissionCache');
 
 const UserENUM = ['admin', 'owner', 'guest'];
 
 class UserService {
   userRepository = new UserRepository();
+  companyRepository = new CompanyRepository();
+
   //  회원가입 매서드
   signup_service = async (
     permission,
@@ -84,11 +88,15 @@ class UserService {
       // console.log('isValidPassword :', isValidPassword);
 
       // 토큰생성
-      let token = jwt.sign({ email: isExistUser.email, userId: isExistUser.userId }, process.env.COOKIE_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE_TIME,
-      });
-      const TYPE = "Bearer";
-      token = TYPE + " " + token;
+      let token = jwt.sign(
+        { email: isExistUser.email, userId: isExistUser.userId },
+        process.env.COOKIE_SECRET,
+        {
+          expiresIn: process.env.JWT_EXPIRE_TIME,
+        }
+      );
+      const TYPE = 'Bearer';
+      token = TYPE + ' ' + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
       return token;
@@ -214,6 +222,11 @@ class UserService {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
         throw new Error('비밀번호가 일치하지 않습니다.');
+      }
+
+      const haveCompany = await this.companyRepository.companyId(user.userId);
+      if (haveCompany) {
+        throw new Error('등록된 업장이 있으면 탈퇴하실 수 없습니다.');
       }
 
       await this.userRepository.resignUser_service(email);
