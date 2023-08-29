@@ -5,12 +5,12 @@ class LoginController {
   loginService = new LoginService();
 
   //  로그인 매서드
-  loginController = async (req, res) => {
+  login = async (req, res) => {
     console.log('로그인 매서드 시작');
     const { email, password } = req.body;
 
     try {
-      const token = await this.loginService.loginUserService(email, password);
+      const token = await this.loginService.login(email, password);
 
       res.header('Authorization', token);
       res.status(200).json({ message: '로그인에 성공했습니다.', token });
@@ -30,7 +30,7 @@ class LoginController {
   };
 
   //  로그아웃 메서드
-  logoutController = async (req, res) => {
+  logout = async (req, res) => {
     console.log('로그아웃 메서드 컨트롤러 진입');
 
     try {
