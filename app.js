@@ -3,7 +3,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
-const nunjucks = require('nunjucks');
+// const nunjucks = require('nunjucks');
 
 require('dotenv').config();
 
@@ -23,13 +23,13 @@ sequelize
     console.error(err);
   });
 
-app.set('view engine', 'html');
+// app.set('view engine', 'html');
 
-nunjucks.configure('template', {
-  autoescape: true,
-  express: app,
-  watch: true,
-});
+// nunjucks.configure('template', {
+//   autoescape: true,
+//   express: app,
+//   watch: true,
+// });
 
 app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));
@@ -41,19 +41,16 @@ app.use('/api', router);
 app.use('/devapi', devRouter);
 ``;
 
-app.use('/template', express.static(__dirname + '/template'));
-app.use(express.static(__dirname + '/js'));
-
-app.get('/', (req, res) => {
-  res.render('user.html', {
-    // error : __dirname + '/test.html'
-    // error : path.join(__dirname, 'test.html')
-    // complete : path.join(__dirname, 'template', 'test.html')
-    // complete : test.html or ./test.html
-    name: 'minjun',
-    age: 99,
-  });
-});
+// app.get('/', (req, res) => {
+//   res.render('main.html', {
+//     // error : __dirname + '/test.html'
+//     // error : path.join(__dirname, 'test.html')
+//     // complete : path.join(__dirname, 'template', 'test.html')
+//     // complete : test.html or ./test.html
+//     name: 'minjun',
+//     age: 99,
+//   });
+// });
 
 // app.get('/signup.html', (req, res) => {
 //   res.render('signup.html', {});
