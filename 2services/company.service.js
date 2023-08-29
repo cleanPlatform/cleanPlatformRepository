@@ -66,7 +66,6 @@ class CompanyService {
       throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
 
-    try {
       await this.companyRepository.updateCompanyInfo(
         companyId,
         userId,
@@ -86,9 +85,6 @@ class CompanyService {
         createdAt: updatedData.createdAt,
         updatedAt: updatedData.updatedAt,
       };
-    } catch (error) {
-      throw new Error(error);
-    }
   };
 
   // 회사 정보 삭제
@@ -103,11 +99,9 @@ class CompanyService {
       throw new ApiError(400, '정말 삭제하시겠다면 'sureDelete':'yes'라고 입력해주세요.");
     }
 
-    try {
+
       return await this.companyRepository.deleteCompanyInfo(companyId);
-    } catch (error) {
-      throw new ApiError(400, error);
-    }
+
   };
 }
 
