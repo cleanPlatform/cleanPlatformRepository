@@ -11,13 +11,13 @@ class CompanyService {
   addCompany = async (userId, companyName, address, phoneNumber) => {
     console.log('companyName :', companyName);
     if (!companyName) {
-      throw new Error('업체명을 입력해주세요.');
+      throw new ApiError(400, '업체명을 입력해주세요');
     }
     if (!address) {
-      throw new Error('업체 주소를 입력해주세요.');
+      throw new ApiError(400, '업체 주소를 입력해주세요.');
     }
     if (!phoneNumber) {
-      throw new Error('업체 연락처를 입력해주세요.');
+     throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
     console.log('userId: ', userId);
     const addCompanyData = await this.companyRepository.addCompany(
@@ -61,13 +61,13 @@ class CompanyService {
     const companyCheck = await this.companyRepository.searchOneCompany(companyId);
 
     if (!companyCheck) {
-      throw new Error('업체 등록 번호를 다시 확인해주세요.');
+      throw new ApiError(400, 'W업체 등록 번호를 다시 확인해주세요.');
     } else if (!companyName) {
-      throw new Error('업체명을 입력해주세요.');
+      throw new ApiError(400, '업체명을 입력해주세요.');
     } else if (!address) {
-      throw new Error('업체 주소를 입력해주세요.');
+      throw new ApiError(400, '업체 주소를 입력해주세요.');
     } else if (!phoneNumber) {
-      throw new Error('업체 연락처를 입력해주세요.');
+      throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
 
     try {
@@ -100,17 +100,17 @@ class CompanyService {
     const companyCheck = await this.companyRepository.searchOneCompany(companyId);
 
     if (!companyCheck) {
-      throw new Error('업체 등록 번호를 다시 확인해주세요.');
+      throw new ApiError(400, 'W업체 등록 번호를 다시 확인해주세요.');
     }
 
     if (sureDelete !== 'yes') {
-      throw new Error("정말 삭제하시겠다면 'sureDelete':'yes'라고 입력해주세요.");
+      throw new ApiError(400, '정말 삭제하시겠다면 'sureDelete':'yes'라고 입력해주세요.");
     }
 
     try {
       return await this.companyRepository.deleteCompanyInfo(companyId);
     } catch (error) {
-      throw new Error(error);
+      throw new ApiError(400, error);
     }
   };
 }
