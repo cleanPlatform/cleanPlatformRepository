@@ -17,7 +17,7 @@ class CompanyService {
       throw new ApiError(400, '업체 주소를 입력해주세요.');
     }
     if (!phoneNumber) {
-     throw new ApiError(400, '업체 연락처를 입력해주세요.');
+      throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
     console.log('userId: ', userId);
     const addCompanyData = await this.companyRepository.addCompany(
@@ -39,17 +39,17 @@ class CompanyService {
 
   // 회사 정보 조회 (전체)
   findCompanyAll = async () => {
-      const allCompany = await this.companyRepository.findCompanyAll();
+    const allCompany = await this.companyRepository.findCompanyAll();
 
-      return {
-        companyId: allCompany.companyId,
-        userId: allCompany.userId,
-        companyName: allCompany.companyName,
-        address: allCompany.address,
-        phoneNumber: allCompany.phoneNumber,
-        createdAt: allCompany.createdAt,
-        updatedAt: allCompany.updatedAt,
-      };
+    return {
+      companyId: allCompany.companyId,
+      userId: allCompany.userId,
+      companyName: allCompany.companyName,
+      address: allCompany.address,
+      phoneNumber: allCompany.phoneNumber,
+      createdAt: allCompany.createdAt,
+      updatedAt: allCompany.updatedAt,
+    };
   };
 
   // 회사 정보 수정
@@ -66,25 +66,25 @@ class CompanyService {
       throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
 
-      await this.companyRepository.updateCompanyInfo(
-        companyId,
-        userId,
-        companyName,
-        address,
-        phoneNumber
-      );
+    await this.companyRepository.updateCompanyInfo(
+      companyId,
+      userId,
+      companyName,
+      address,
+      phoneNumber
+    );
 
-      const updatedData = await this.companyRepository.searchOneCompany(companyId);
+    const updatedData = await this.companyRepository.searchOneCompany(companyId);
 
-      return {
-        companyId: updatedData.companyId,
-        userId: updatedData.userId,
-        companyName: updatedData.companyName,
-        address: updatedData.address,
-        phoneNumber: updatedData.phoneNumber,
-        createdAt: updatedData.createdAt,
-        updatedAt: updatedData.updatedAt,
-      };
+    return {
+      companyId: updatedData.companyId,
+      userId: updatedData.userId,
+      companyName: updatedData.companyName,
+      address: updatedData.address,
+      phoneNumber: updatedData.phoneNumber,
+      createdAt: updatedData.createdAt,
+      updatedAt: updatedData.updatedAt,
+    };
   };
 
   // 회사 정보 삭제
@@ -96,12 +96,10 @@ class CompanyService {
     }
 
     if (sureDelete !== 'yes') {
-      throw new ApiError(400, '정말 삭제하시겠다면 'sureDelete':'yes'라고 입력해주세요.");
+      throw new ApiError(400, "정말 삭제하시겠다면 'sureDelete':'yes'라고 입력해주세요.");
     }
 
-
-      return await this.companyRepository.deleteCompanyInfo(companyId);
-
+    return await this.companyRepository.deleteCompanyInfo(companyId);
   };
 }
 
