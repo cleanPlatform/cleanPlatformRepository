@@ -7,7 +7,7 @@ const UserRepository = require('../3repositories/user.repository');
 class LoginService {
   userRepository = new UserRepository();
   //  로그인 매서드
-  loginUser = async (email, password) => {
+  login = async (email, password) => {
     try {
       // 존재하는 이메일인지 확인하기
       const isExistUser = await this.userRepository.findUser(email);
