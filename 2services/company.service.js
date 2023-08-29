@@ -1,122 +1,106 @@
-const OfferRepository = require('../3repositories/offer.repository');
 const CompanyRepository = require('../3repositories/company.repository');
-const UserRepository = require('../3repositories/user.repository');
 
-class OfferService {
-  OfferRepository = new OfferRepository();
-  CompanyRepository = new CompanyRepository();
-  UserRepository = new UserRepository();
+const ApiError = require('../utils/apierror');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
-  // 업체 서비스 생성
-  createOffer = async (userId, companyId, offerName, offerNumber, price) => {
-    try {
-      if (!offerName) return { status: 400, message: '업체 이름을 넣어주세요' };
-      if (!offerNumber) return { status: 400, message: '업체 전화번호를 넣어주세요' };
-      if (!price) return { status: 400, message: '가격을 넣어주세요' };
+class CompanyService {
+  companyRepository = new CompanyRepository();
 
-      // 유저 조회 기능
-      const findUser = await this.UserRepository.findUserOne(userId);
-      if (!findUser) return { status: 401, message: ' 유저가 없습니다.' };
-
-      // 업체 조회 기능
-      const findeService = await this.CompanyRepository.searchOneCompany(companyId);
-      if (!findeService) return { status: 401, message: ' 업체가 없습니다.' };
-
-      // 업체 id랑 userid는 기능 생성 후 로직 추가 예정
-      const CreateService = await this.OfferRepository.createOffer(
-        userId,
-        companyId,
-        offerName,
-        offerNumber,
-        price
-      );
-      return { status: 200, message: '서비스가 생성되었습니다.', CreateService };
-    } catch (error) {
-      console.error(error);
-      return { status: 500, massge: '서버오류' };
+  // 회사 등록
+  addCompany = async (userId, companyName, address, phoneNumber) => {
+    console.log('companyName :', companyName);
+    if (!companyName) {
+      throw new ApiError(400, '업체명을 입력해주세요');
     }
+    if (!address) {
+      throw new ApiError(400, '업체 주소를 입력해주세요.');
+    }
+    if (!phoneNumber) {
+      throw new ApiError(400, '업체 연락처를 입력해주세요.');
+    }
+    console.log('userId: ', userId);
+    const addCompanyData = await this.companyRepository.addCompany(
+      userId,
+      companyName,
+      address,
+      phoneNumber
+    );
+
+    return {
+      companyId: addCompanyData.companyId,
+      userId: addCompanyData.userId,
+      companyName: addCompanyData.companyName,
+      address: addCompanyData.address,
+      phoneNumber: addCompanyData.phoneNumber,
+      // createdAt: addCompanyData.createdAt,
+    };
   };
 
-  // 업체 서비스 수정
-  updateOffer = async (offerId, companyId, userId, offerName, offerNumber, price) => {
-    try {
-      if (!offerName) return { status: 400, message: '업체 이름을 넣어주세요' };
-      if (!offerNumber) return { status: 400, message: '업체 전화번호를 넣어주세요' };
-      if (!price) return { status: 400, message: '가격을 넣어주세요' };
+  // 회사 정보 조회 (전체)
+  findCompanyAll = async () => {
+    const allCompany = await this.companyRepository.findCompanyAll();
 
-      // 유저 조회 기능
-      const findUser = await this.UserRepository.findUserOne(userId);
-      if (!findUser) return { status: 401, message: ' 유저가 없습니다.' };
-
-      // 업체 조회 기능
-      const findeService = await this.CompanyRepository.searchOneCompany(companyId);
-      if (!findeService) return { status: 400, message: ' 업체가 없습니다.' };
-
-      // 서비스 조회 기능
-      const findUpdate = await this.OfferRepository.findOffer(offerId);
-
-      if (!findUpdate) return { status: 400, message: '서비스가 없습니다.' };
-
-      if (offerName === findUpdate.offerName) {
-        return { status: 400, message: '이미 동일한 서비스 이름이 있습니다.' };
-      }
-
-      if (findUpdate.offerNumber === offerNumber)
-        // paseInt 넘버로 바꾸거나 body 값에서 1부터넣으면 됨
-        return { status: 400, message: '동일한 번호로 수정이 불가능합니다.' };
-
-      const updateService = await this.OfferRepository.updateOffer(
-        offerId,
-        companyId,
-        userId,
-        offerName,
-        offerNumber,
-        price
-      );
-      return { status: 200, message: '서비스가 수정 되었습니다.', updateService };
-    } catch (error) {
-      console.error(error);
-      return { status: 500, massge: '서버오류' };
-    }
+    return {
+      companyId: allCompany.companyId,
+      userId: allCompany.userId,
+      companyName: allCompany.companyName,
+      address: allCompany.address,
+      phoneNumber: allCompany.phoneNumber,
+      createdAt: allCompany.createdAt,
+      updatedAt: allCompany.updatedAt,
+    };
   };
 
-  // 업체 서비스 삭제
-  destroyOffer = async (offerId, userId) => {
-    try {
-      // 서비스 조회 기능
-      const findDestroy = await this.OfferRepository.findOffer(offerId);
-      if (!findDestroy) return { status: 400, message: '서비스가 없습니다.' };
+  // 회사 정보 수정
+  updateCompanyInfo = async (companyId, userId, companyName, address, phoneNumber) => {
+    const companyCheck = await this.companyRepository.searchOneCompany(companyId);
 
-      // 유저 조회 기능
-      const findUser = await this.UserRepository.findUserOne(userId);
-      if (!findUser) return { status: 401, message: ' 유저가 없습니다.' };
-
-      const destroyService = await this.OfferRepository.destroyOffer(offerId, userId);
-      return { status: 200, message: '서비스가 삭제 되었습니다.', destroyService };
-    } catch (error) {
-      console.error(error);
-      return { status: 500, massge: '서버오류' };
+    if (!companyCheck) {
+      throw new ApiError(400, 'W업체 등록 번호를 다시 확인해주세요.');
+    } else if (!companyName) {
+      throw new ApiError(400, '업체명을 입력해주세요.');
+    } else if (!address) {
+      throw new ApiError(400, '업체 주소를 입력해주세요.');
+    } else if (!phoneNumber) {
+      throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
+
+    await this.companyRepository.updateCompanyInfo(
+      companyId,
+      userId,
+      companyName,
+      address,
+      phoneNumber
+    );
+
+    const updatedData = await this.companyRepository.searchOneCompany(companyId);
+
+    return {
+      companyId: updatedData.companyId,
+      userId: updatedData.userId,
+      companyName: updatedData.companyName,
+      address: updatedData.address,
+      phoneNumber: updatedData.phoneNumber,
+      createdAt: updatedData.createdAt,
+      updatedAt: updatedData.updatedAt,
+    };
   };
 
-  // 업체 서비스 전체 조회
-  findAllOffer = async () => {
-    const findAll = await this.OfferRepository.findAllOffer();
+  // 회사 정보 삭제
+  deleteCompany = async (companyId, sureDelete) => {
+    const companyCheck = await this.companyRepository.searchOneCompany(companyId);
 
-    return findAll;
-  };
-
-  // 업체 서비스 상세 조회
-  findOneOffer = async (offerId) => {
-    try {
-      const findOne = await this.OfferRepository.findOneOffer(offerId);
-      if (!findOne) return { status: 400, message: '조회된 서비스가 없습니다.' };
-
-      return findOne;
-    } catch (error) {
-      console.error(error);
-      return { status: 500, massge: '서버오류' };
+    if (!companyCheck) {
+      throw new ApiError(400, 'W업체 등록 번호를 다시 확인해주세요.');
     }
+
+    if (sureDelete !== 'yes') {
+      throw new ApiError(400, "정말 삭제하시겠다면 'sureDelete':'yes'라고 입력해주세요.");
+    }
+
+    return await this.companyRepository.deleteCompanyInfo(companyId);
   };
 }
-module.exports = OfferService;
+
+module.exports = CompanyService;

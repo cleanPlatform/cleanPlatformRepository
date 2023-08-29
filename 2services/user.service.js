@@ -14,7 +14,7 @@ class UserService {
   companyRepository = new CompanyRepository();
 
   //  회원가입 매서드
-  signup_service = async (
+  signupService = async (
     permission,
     name,
     nickname,
@@ -52,7 +52,7 @@ class UserService {
     //암호화
     password = await bcrypt.hash(password, 6);
 
-    const result = await this.userRepository.signup_repository(
+    const result = await this.userRepository.signupRepository(
       permission,
       name,
       nickname,
@@ -102,7 +102,7 @@ class UserService {
   };
 
   //  회원 정보 조회 매서드
-  referUser_service = async (token, password) => {
+  referUserService = async (token, password) => {
     try {
       const decodedToken = await util.promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
       const { email } = decodedToken;
@@ -133,7 +133,7 @@ class UserService {
   };
 
   //  회원 정보 수정 매서드
-  updateUser_service = async (token, updateData) => {
+  updateUserService = async (token, updateData) => {
     try {
       const decodedToken = await util.promisify(jwt.verify)(token, process.env.COOKIE_SECRET);
       const { email } = decodedToken;
@@ -186,7 +186,7 @@ class UserService {
         updateDater[element] = updateData[element] || user[element];
       }
 
-      await this.userRepository.updateUser(
+      await this.userRepository.updateUserRepository(
         email,
         name,
         nickname,
@@ -195,12 +195,12 @@ class UserService {
         phoneNumber
       );
     } catch (err) {
-      throw err;
+      throw new Error(err);
     }
   };
 
   //  회원 탈퇴 API
-  resignUser_service = async (token, deleteData) => {
+  deleteAccountService = async (token, deleteData) => {
     try {
       const { password } = deleteData;
 
@@ -222,7 +222,7 @@ class UserService {
         throw new Error('등록된 업장이 있으면 탈퇴하실 수 없습니다.');
       }
 
-      await this.userRepository.resignUser_service(email);
+      await this.userRepository.deleteAccountService(email);
     } catch (err) {
       console.log('서비스 err :', err);
       throw new Error(err);

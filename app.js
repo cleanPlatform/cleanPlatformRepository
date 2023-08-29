@@ -40,6 +40,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use('/api', router);
 app.use('/devapi', devRouter);
 ``;
+
 // app.get('/', (req, res) => {
 //   res.render('main.html', {
 //     // error : __dirname + '/test.html'
@@ -49,6 +50,10 @@ app.use('/devapi', devRouter);
 //     name: 'minjun',
 //     age: 99,
 //   });
+// });
+
+// app.get('/signup.html', (req, res) => {
+//   res.render('signup.html', {});
 // });
 
 app.use((req, res, next) => {
