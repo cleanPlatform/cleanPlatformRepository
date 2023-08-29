@@ -39,7 +39,6 @@ class CompanyService {
 
   // 회사 정보 조회 (전체)
   findCompanyAll = async () => {
-    try {
       const allCompany = await this.companyRepository.findCompanyAll();
 
       return {
@@ -51,9 +50,6 @@ class CompanyService {
         createdAt: allCompany.createdAt,
         updatedAt: allCompany.updatedAt,
       };
-    } catch (error) {
-      throw new Error(error);
-    }
   };
 
   // 회사 정보 수정
