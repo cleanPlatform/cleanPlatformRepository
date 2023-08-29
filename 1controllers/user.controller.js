@@ -4,13 +4,13 @@ const ApiError = require('../utils/apierror');
 class UsersController {
   userService = new UserService();
   // 회원가입 API
-  signup_controller = async (req, res) => {
+  signupController = async (req, res) => {
     console.log('회원가입 매서드 시작');
     try {
       const { permission, name, nickname, email, password, passwordConfirm, address, phoneNumber } =
         req.body;
 
-      await this.userService.signup_service(
+      await this.userService.signupService(
         permission,
         name,
         nickname,
@@ -33,33 +33,8 @@ class UsersController {
     }
   };
 
-  //  로그인 매서드
-  login_controller = async (req, res) => {
-    console.log('로그인 매서드 시작');
-    const { email, password } = req.body;
-
-    try {
-      const token = await this.userService.loginUser_service(email, password);
-
-      res.header('Authorization', token);
-      res.status(200).json({ message: '로그인에 성공했습니다.', token });
-    } catch (err) {
-      console.log('컨트롤러 err :', err);
-      if (err instanceof ApiError) {
-        // console.error(err.message);
-        return res
-          .status(409)
-          .json({ message: '로그인에 실패했습니다. 메일과 비밀번호를 확인해주세요.' });
-      }
-      return res
-        .status(409)
-        .json({ message: '로그인에 실패했습니다. 메일과 비밀번호를 확인해주세요.' });
-      // return res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
-
   //회원 정보 조회 API
-  referUser_controller = async (req, res) => {
+  referUserController = async (req, res) => {
     try {
       const { authorization } = req.headers;
       const { password } = req.body;
@@ -69,7 +44,7 @@ class UsersController {
 
       const token = authorization.replace('Bearer ', '');
 
-      const user = await this.userService.referUser_service(token, password);
+      const user = await this.userService.referUserService(token, password);
 
       const userInfo = user.userWithoutPassword;
 
@@ -87,7 +62,7 @@ class UsersController {
   };
 
   //회원 정보 수정 API
-  updateUser_controller = async (req, res) => {
+  updateUserController = async (req, res) => {
     try {
       const { authorization } = req.headers;
       if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -96,7 +71,7 @@ class UsersController {
 
       const token = authorization.replace('Bearer ', '');
 
-      await this.userService.updateUser_service(token, req.body);
+      await this.userService.updateUserService(token, req.body);
 
       return res.status(200).json({ message: '프로필을 수정하였습니다.' });
     } catch (err) {
@@ -106,7 +81,7 @@ class UsersController {
   };
 
   //  회원 탈퇴 매서드
-  resignUser_controller = async (req, res) => {
+  deleteAccountController = async (req, res) => {
     try {
       // const {password} = req.body
       const { authorization } = req.headers;
@@ -116,7 +91,7 @@ class UsersController {
 
       const token = authorization.replace('Bearer ', '');
 
-      await this.userService.resignUser_service(token, req.body);
+      await this.userService.deleteAccountService(token, req.body);
 
       return res.status(200).json({ message: '회원 탈퇴 완료하였습니다.' });
     } catch (err) {

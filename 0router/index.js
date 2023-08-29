@@ -5,6 +5,7 @@ const authRouter = require('./auth.router');
 const userRouter = require('./user.router');
 const companyRouter = require('./company.router');
 const offerRouter = require('./offer.router');
+const loginRouter = require('./login.router');
 // const reservationRouter = require('./reservation.router');
 // const reviewRouter = require('./review.router');
 
@@ -27,18 +28,10 @@ const defaultRoutes = [
     path: '/offer',
     route: offerRouter,
   },
-  // {
-  //   path: '/',
-  //   route: reservationRouter,
-  // },
-  //   {
-  //     path: '/review',
-  //     route: reviewRouter,
-  //   },
-  // {
-  //   path: '',
-  //   route: ,
-  // },
+  {
+    path: '/login',
+    route: loginRouter,
+  },
 ];
 
 defaultRoutes.forEach((route) => {
