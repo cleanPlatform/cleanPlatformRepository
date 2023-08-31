@@ -34,6 +34,10 @@ class Reservation extends Sequelize.Model {
           type: Sequelize.STRING(200),
           allowNull: true,
         },
+        status: {
+            type: Sequelize.ENUM("canceled", "reserved"),
+            allowNull: false
+        }
       },
       {
         sequelize,
