@@ -29,7 +29,7 @@ const defaultRoutes = [
     route: offerRouter,
   },
   {
-    path: '/login',
+    path: '/sign',
     route: loginRouter,
   },
 ];

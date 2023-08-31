@@ -1,6 +1,5 @@
 const CompanyService = require('../2services/company.service');
-
-const ApiError = require('../apierror');
+const ApiError = require('../utils/apierror');
 
 class CompanyController {
   companyService = new CompanyService();

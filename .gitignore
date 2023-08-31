@@ -145,4 +145,6 @@ dist
 ./app.js
 ./0router/index.js
 
+app.js
+
 # End of https://www.toptal.com/developers/gitignore/api/node
