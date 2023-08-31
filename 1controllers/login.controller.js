@@ -34,17 +34,11 @@ class LoginController {
     console.log('로그아웃 메서드 컨트롤러 진입');
 
     try {
-      const { sureLogout } = req.body;
-
-      if (sureLogout === 'yes') {
-        // 로그아웃시 헤더에 토큰을 제거
-        // 썬더 클라이언트에서는 헤더에 값이 할당되지 않아서 수동으로해야함
-        // 프론트를 만든 다음에 확인야 할 필요가 있음
-        res.removeHeader('Authorization');
-        return res.status(200).json({ message: '로그아웃에 성공하였습니다.' });
-      } else {
-        return res.status(400).json({ message: '잘못된 요청입니다.' });
-      }
+      // 로그아웃시 헤더에 토큰을 제거
+      // 썬더 클라이언트에서는 헤더에 값이 할당되지 않아서 수동으로해야함
+      // 프론트를 만든 다음에 확인야 할 필요가 있음
+      res.removeHeader('Authorization');
+      return res.status(200).json({ message: '로그아웃에 성공하였습니다.' });
     } catch (err) {
       console.log('로그아웃 컨트롤러 캐치 진입');
 

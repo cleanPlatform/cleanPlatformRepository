@@ -19,8 +19,8 @@ class Reservation extends Sequelize.Model {
           allowNull: false,
         },
         companyId: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
+          type: Sequelize.INTEGER,
+          allowNull: false,
         },
         date: {
           type: Sequelize.DATE,
