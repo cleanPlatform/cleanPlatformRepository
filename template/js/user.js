@@ -10,7 +10,7 @@ async function signUp() {
   const address = document.querySelector('#signup-address').value;
   const phoneNumber = document.querySelector('#signup-phone-number').value;
 
-  const response = await fetch(`http://localhost:8080/api/user/signup`, {
+  const response = await fetch(`/api/user/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,90 +32,30 @@ async function signUp() {
   return alert(result.message);
 }
 
-//  로그인
-async function logIn() {
-  console.log('로그인 함수 시작');
-  const email = document.querySelector('#login-email').value;
-  const password = document.querySelector('#login-password').value;
+//  업장 등록하기
+async function createCompany() {
+  console.log('업장등록 함수 시작');
+  const companyName = document.querySelector('#createCompany-name').value;
+  const address = document.querySelector('#createCompany-adress').value;
+  const phoneNumber = document.querySelector('#createCompany-phoneNumber').value;
 
-  const response = await fetch(`http://localhost:8080/api/sign/signin`, {
+  const response = await fetch(`http://servicenode.iptime.org/api/company/companies`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      email,
-      password,
+      companyName,
+      address,
+      phoneNumber,
     }),
   });
   const result = await response.json();
+  //  console.log("@@@@@@@@@=>",response)
+  // console.log(result.message);
 
-  console.log(result.message);
-  console.log(result.toeken);
-
-  const loginToken = result.token;
-
-  if (response.status == 200) {
-    // localStorage.setItem('Authorization', loginToken);
-    sessionStorage.setItem('Authorization', loginToken);
-  }
-
-  location.reload();
   return alert(result.message);
-}
-
-//  로그아웃
-async function logOut() {
-  console.log('로그아웃 함수 시작');
-
-  sessionStorage.removeItem('Authorization');
-
-  console.log('로그아웃 되었습니다.');
-
-  location.reload();
-  alert('로그아웃 되었습니다.');
-}
-
-// 모달을 생성하고 초기화하는 함수
-function createModal(modalId, modalTitle, modalContent) {
-  const modalHtml = `
-    <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog" aria-labelledby="${modalId}Label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="${modalId}Label">${modalTitle}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ${modalContent}
-                </div>
-            </div>
-        </div>
-    </div>
-  `;
-
-  // 모달을 현재 문서에 추가
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-// 모달이 열릴 때 실행되는 함수
-function showModal(modalId, modalTitle, modalContent) {
-  // 모달을 생성하고 초기화하는 작업을 수행할 수 있습니다.
-  createModal(modalId, modalTitle, modalContent);
-
-  // // 아이콘 추가
-  // $(document).ready(function () {
-  //   $('.main i').on('click', function () {
-  //     $('input').toggleClass('active');
-  //     if ($('input').hasClass('active')) {
-  //       $(this).attr('class', 'fa fa-eye-slash fa-lg').prev('input').attr('type', 'text');
-  //     } else {
-  //       $(this).attr('class', 'fa fa-eye fa-lg').prev('input').attr('type', 'password');
-  //     }
-  //   });
-  // });
+  // location.reload();
 }
 
 // '회원가입' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
@@ -174,33 +114,6 @@ document
     );
   });
 
-// '로그인' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
-document.querySelector('.btn-primary[data-target="#logIn"]').addEventListener('click', function () {
-  showModal(
-    'logIn',
-    '로그인',
-    `
-    <form>
-      <div class="modal-body">
-          <div class="input-group">
-              <label for="login-email">로그인 이메일　</label>
-              <input id="login-email" type="text" placeholder="xxxx@xxxx.com" />
-          </div>
-          <div class="input-group">
-              <label for="login-password">비밀번호　</label>
-              <!-- <i class="fa fa-eye fa-lg"></i> -->
-              <input type="password" id="login-password" type="email" placeholder="비밀번호" />
-          </div>
-      </div>
-  </form>
-  <div class="modal-footer">
-      <button id="signup-btn" type="submit" class="btn">Close</button>
-      <button type="button" class="btn btn-primary" onclick="logIn()">로그인</button>
-  </div>
-  `
-  );
-});
-
 //  로그인이 되어 있으면 로그인 버튼을 숨기고 로그아웃 버튼을 보인다.
 document.addEventListener('DOMContentLoaded', function () {
   const authorizationToken = sessionStorage.getItem('Authorization');
@@ -217,18 +130,34 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// '로그아웃' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
+// '업장 등록하기' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
 document
-  .querySelector('.btn-primary[data-target="#logOut"]')
+  .querySelector('.btn-primary[data-target="#createCompany"]')
   .addEventListener('click', function () {
     showModal(
-      'logOut',
-      '로그아웃',
+      'createCompany',
+      '업장 등록하기',
       `
-  <div class="modal-footer">
-      <button id="signup-btn" type="submit" class="btn">취소</button>
-      <button type="button" class="btn btn-primary" onclick="logOut()">로그아웃</button>
-  </div>
-  `
+    <form>
+      <div class="modal-body">
+          <div class="input-group">
+              <label for="createCompany-name">회사 이름　</label>
+              <input id="createCompany-name" type="text" placeholder="회사 이름" />
+          </div>
+          <div class="input-group">
+              <label for="createCompany-adress">회사 주소　</label>
+              <input id="createCompany-adress" type="text" placeholder="회사 주소" />
+          </div>
+          <div class="input-group">
+              <label for="createCompany-phoneNumber">회사 전화번호　</label>
+              <input id="createCompany-phoneNumber" type="text" placeholder="회사 전화번호" />
+          </div>
+      </div>
+  </form>
+<div class="modal-footer">
+    <button id="signup-btn" type="submit" class="btn">취소</button>
+    <button type="button" class="btn btn-primary" onclick="createCompany()">업장 등록하기</button>
+</div>
+`
     );
   });
