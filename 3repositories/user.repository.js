@@ -1,18 +1,16 @@
 const { User } = require('../0models');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
-class UserRepository {
-  // loginId로 회원 조회
-  findUser = async (email) => {
-    return await User.findOne({ where: { email } });
+      await t.commit();
+      return updateRepository;
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   };
-
-  // userId로 조회
-  findUserOne = async (userId) => {
-    return await User.findOne({ where: { userId } });
-  };
-
   // 회원가입 API
-  signupRepository = async (permission, name, nickname, email, password, address, phoneNumber) => {
+  signup_repository = async (permission, name, nickname, email, password, address, phoneNumber) => {
     const result = await User.create({
       permission,
       name,
@@ -23,16 +21,33 @@ class UserRepository {
       phoneNumber,
     });
 
-    return result;
+    try {
+      const findOffer = await Offer.findOne({ where: { offerId: offerId } });
+      await t.commit();
+      return findOffer;
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   };
 
-  loginRepository = async (email, password) => {
+  login_repository = async (email, password) => {
     try {
-    } catch (err) {}
+      const destroyRepository = await Offer.destroy({
+        where: { offerId },
+        transaction: t,
+      });
+
+      await t.commit();
+      return destroyRepository;
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   };
 
   //회원 정보 수정 API
-  updateUserRepository = async (email, name, nickname, hashPassword, address, phoneNumber) => {
+  updateUser = async (email, name, nickname, hashPassword, address, phoneNumber) => {
     await User.update(
       {
         name: name,
@@ -46,9 +61,9 @@ class UserRepository {
   };
 
   //회원 탈퇴 API
-  deleteAccountService = async (email) => {
+  resignUser_service = async (email) => {
     await User.destroy({ where: { email: email } });
   };
 }
 
-module.exports = UserRepository;
+module.exports = OfferRepository;
