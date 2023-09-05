@@ -6,7 +6,7 @@ const UserRepository = require('../3repositories/user.repository');
 
 class LoginService {
   userRepository = new UserRepository();
-  //  로그인 매서드
+  //  로그인 핸들러
   login = async (email, password) => {
     try {
       // 존재하는 이메일인지 확인하기
@@ -21,9 +21,6 @@ class LoginService {
         const errorMessage = '비밀번호가 일치하지 않습니다.';
         throw new ApiError(409, errorMessage);
       }
-
-      // console.log('isExistUser :', isExistUser);
-      // console.log('isValidPassword :', isValidPassword);
 
       // 토큰생성
       let token = jwt.sign(
@@ -43,6 +40,15 @@ class LoginService {
       // return res.status(err.status).json({ message: err.message });
       throw new Error(err);
       // return { status: err.status, message: err.message };
+    }
+  };
+
+  logout = async (userId) => {
+    try {
+      await permissionCache.clearCache(userId);
+    } catch (err) {
+      console.error('로그아웃 실패: ', err);
+      throw err;
     }
   };
 }

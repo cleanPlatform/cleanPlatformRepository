@@ -8,7 +8,6 @@ class CompanyController {
   createCompany = async (req, res) => {
     const { companyName, address, phoneNumber } = req.body;
     const userId = res.locals.userId;
-    console.log('@@@@@@@@@@@=> :', companyName, address, phoneNumber);
     try {
       const addCompanyData = await this.companyService.addCompany(
         userId,
