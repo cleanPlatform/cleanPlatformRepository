@@ -64,8 +64,9 @@ async function logOut() {
     },
   });
 
-  // Bearer 형식의 JWT 토큰을 삭제
+  // Bearer 형식의 JWT 토큰을 삭제하고, 세션 스토리지의 permission 삭제
   removeBearerTokenCookie();
+  sessionStorage.removeItem('permission');
 
   console.log('로그아웃 되었습니다.');
 
