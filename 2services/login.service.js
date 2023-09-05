@@ -22,19 +22,27 @@ class LoginService {
         throw new ApiError(409, errorMessage);
       }
 
+      console.log('isExistUser.permission :', isExistUser.permission);
+
       // 토큰생성
       let token = jwt.sign(
-        { email: isExistUser.email, userId: isExistUser.userId },
+        {
+          email: isExistUser.email,
+          userId: isExistUser.userId,
+          // permission: isExistUser.permission,
+        },
         process.env.COOKIE_SECRET,
         {
           expiresIn: process.env.JWT_EXPIRE_TIME,
         }
       );
+
+      const permission = isExistUser.permission;
       const TYPE = 'Bearer';
       token = TYPE + ' ' + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
-      return token;
+      return { token, permission };
     } catch (err) {
       console.log(err);
       // return res.status(err.status).json({ message: err.message });

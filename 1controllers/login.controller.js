@@ -10,10 +10,8 @@ class LoginController {
 
     try {
       const token = await this.loginService.login(email, password);
-      console.log('토큰 :', token);
-
-      res.cookie('Authorization', token);
-      res.status(200).json({ message: `로그인에 성공했습니다. 토큰 : ${token}` });
+      res.cookie('Authorization', token.token);
+      res.status(200).json({ message: `로그인에 성공했습니다.`, permission: token.permission });
     } catch (err) {
       console.log('컨트롤러 err :', err);
       if (err instanceof ApiError) {

@@ -46,14 +46,11 @@ app.use('/devapi', devRouter);
 ``;
 
 app.get('/', (req, res) => {
-  res.render('user.html', {
-    // error : __dirname + '/test.html'
-    // error : path.join(__dirname, 'test.html')
-    // complete : path.join(__dirname, 'template', 'test.html')
-    // complete : test.html or ./test.html
-    name: 'minjun',
-    age: 99,
-  });
+  res.render('user.html', {});
+});
+
+app.get('/myCompany', (req, res) => {
+  res.render('company.html', {});
 });
 
 // app.get('/signup.html', (req, res) => {

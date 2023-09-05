@@ -91,6 +91,7 @@ document
 //  로그인이 되어 있으면 로그인 버튼을 숨기고 로그아웃 버튼을 보인다.
 document.addEventListener('DOMContentLoaded', function () {
   const authorizationToken = getCookie('Authorization');
+  const permission = sessionStorage.getItem('permission');
 
   if (authorizationToken) {
     const loginButton = document.querySelector('.btn-primary[data-target="#logIn"]');
@@ -102,7 +103,22 @@ document.addEventListener('DOMContentLoaded', function () {
       logoutButton.style.display = '';
     }
   }
+
+  // 사장으로 로그인 시 내 업장 관리 버튼 활성화
+  if (permission === 'owner') {
+    const myCompanyButton = document.querySelector('.btn-primary[data-target="#myCompany"]');
+    if (myCompanyButton) {
+      myCompanyButton.style.display = '';
+    }
+  }
 });
+
+//  업장으로 이동
+document
+  .querySelector('.btn-primary[data-target="#myCompany"]')
+  .addEventListener('click', function () {
+    window.location.href = '/myCompany';
+  });
 
 // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
 function getCookie(name) {
@@ -115,35 +131,3 @@ function getCookie(name) {
   }
   return null;
 }
-
-// '업장 등록하기' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
-document
-  .querySelector('.btn-primary[data-target="#createCompany"]')
-  .addEventListener('click', function () {
-    showModal(
-      'createCompany',
-      '업장 등록하기',
-      `
-    <form>
-      <div class="modal-body">
-          <div class="input-group">
-              <label for="createCompany-name">회사 이름　</label>
-              <input id="createCompany-name" type="text" placeholder="회사 이름" />
-          </div>
-          <div class="input-group">
-              <label for="createCompany-adress">회사 주소　</label>
-              <input id="createCompany-adress" type="text" placeholder="회사 주소" />
-          </div>
-          <div class="input-group">
-              <label for="createCompany-phoneNumber">회사 전화번호　</label>
-              <input id="createCompany-phoneNumber" type="text" placeholder="회사 전화번호" />
-          </div>
-      </div>
-  </form>
-<div class="modal-footer">
-    <button id="signup-btn" type="submit" class="btn">취소</button>
-    <button type="button" class="btn btn-primary" onclick="createCompany()">업장 등록하기</button>
-</div>
-`
-    );
-  });

@@ -16,12 +16,10 @@ async function logIn() {
   });
   const result = await response.json();
 
-  console.log(result);
-
-  const loginToken = result.token;
+  console.log('loginToken :', result.permission);
 
   if (response.status == 200) {
-    // sessionStorage.setItem('Authorization', loginToken);
+    sessionStorage.setItem('permission', result.permission);
     location.reload();
   }
 

@@ -22,6 +22,38 @@ async function createCompany() {
   //  console.log("@@@@@@@@@=>",response)
   // console.log(result.message);
 
+  window.location.reload();
   return alert(result.message);
-  // location.reload();
 }
+
+// '업장 등록하기' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
+document
+  .querySelector('.btn-primary[data-target="#createCompany"]')
+  .addEventListener('click', function () {
+    showModal(
+      'createCompany',
+      '업장 등록하기',
+      `
+    <form>
+      <div class="modal-body">
+          <div class="input-group">
+              <label for="createCompany-name">회사 이름　</label>
+              <input id="createCompany-name" type="text" placeholder="회사 이름" />
+          </div>
+          <div class="input-group">
+              <label for="createCompany-adress">회사 주소　</label>
+              <input id="createCompany-adress" type="text" placeholder="회사 주소" />
+          </div>
+          <div class="input-group">
+              <label for="createCompany-phoneNumber">회사 전화번호　</label>
+              <input id="createCompany-phoneNumber" type="text" placeholder="회사 전화번호" />
+          </div>
+      </div>
+  </form>
+<div class="modal-footer">
+    <button id="signup-btn" type="submit" class="btn">취소</button>
+    <button type="button" class="btn btn-primary" onclick="createCompany()">업장 등록하기</button>
+</div>
+`
+    );
+  });
