@@ -6,7 +6,7 @@ const UserRepository = require('../3repositories/user.repository');
 
 class LoginService {
   userRepository = new UserRepository();
-  //  로그인 매서드
+  //  로그인 핸들러
   login = async (email, password) => {
     try {
       // 존재하는 이메일인지 확인하기
@@ -22,27 +22,41 @@ class LoginService {
         throw new ApiError(409, errorMessage);
       }
 
-      // console.log('isExistUser :', isExistUser);
-      // console.log('isValidPassword :', isValidPassword);
+      console.log('isExistUser.permission :', isExistUser.permission);
 
       // 토큰생성
       let token = jwt.sign(
-        { email: isExistUser.email, userId: isExistUser.userId },
+        {
+          email: isExistUser.email,
+          userId: isExistUser.userId,
+          // permission: isExistUser.permission,
+        },
         process.env.COOKIE_SECRET,
         {
           expiresIn: process.env.JWT_EXPIRE_TIME,
         }
       );
+
+      const permission = isExistUser.permission;
       const TYPE = 'Bearer';
       token = TYPE + ' ' + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
-      return token;
+      return { token, permission };
     } catch (err) {
       console.log(err);
       // return res.status(err.status).json({ message: err.message });
       throw new Error(err);
       // return { status: err.status, message: err.message };
+    }
+  };
+
+  logout = async (userId) => {
+    try {
+      await permissionCache.clearCache(userId);
+    } catch (err) {
+      console.error('로그아웃 실패: ', err);
+      throw err;
     }
   };
 }

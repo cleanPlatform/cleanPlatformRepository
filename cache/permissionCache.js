@@ -65,6 +65,23 @@ class PermissionCache {
     }
   };
 
+  // 로그아웃시 캐시 삭제
+  clearCache = async (userId) => {
+    console.log('클리어캐시 userId :', userId);
+    try {
+      const cacheKey = `permission${userId}`;
+      if (this.permissionCache.get(cacheKey)) {
+        this.permissionCache.del(cacheKey);
+        console.log(`권한 캐시 (${cacheKey}) 삭제 성공!`);
+      } else {
+        console.log(`권한 캐시 (${cacheKey})를 찾을 수 없음`);
+      }
+    } catch (err) {
+      console.error('권한 캐시 삭제 실패: ', err);
+      throw err;
+    }
+  };
+
   getPermissionCache = (userId) => {
     const data = this.permissionCache.get(`permission${userId}`);
 

@@ -9,7 +9,6 @@ class CompanyService {
 
   // 회사 등록
   addCompany = async (userId, companyName, address, phoneNumber) => {
-    console.log('companyName :', companyName);
     if (!companyName) {
       throw new ApiError(400, '업체명을 입력해주세요');
     }
