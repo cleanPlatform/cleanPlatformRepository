@@ -49,6 +49,15 @@ class CompanyService {
       createdAt: allCompany.createdAt,
       updatedAt: allCompany.updatedAt,
     };
+
+    // return allCompany;
+  };
+
+  //  나희 회사 조회
+  getMyCompany = async (userId) => {
+    const getAllCompanyRepository = await this.companyRepository.companyId(userId);
+
+    return getAllCompanyRepository;
   };
 
   // 회사 정보 수정
@@ -56,7 +65,7 @@ class CompanyService {
     const companyCheck = await this.companyRepository.searchOneCompany(companyId);
 
     if (!companyCheck) {
-      throw new ApiError(400, 'W업체 등록 번호를 다시 확인해주세요.');
+      throw new ApiError(400, '업체 등록 번호를 다시 확인해주세요.');
     } else if (!companyName) {
       throw new ApiError(400, '업체명을 입력해주세요.');
     } else if (!address) {

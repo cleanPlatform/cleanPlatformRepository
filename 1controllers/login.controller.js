@@ -29,7 +29,6 @@ class LoginController {
   //  로그아웃 핸들러
   logout = async (req, res) => {
     const userId = res.locals.userId;
-
     try {
       await this.loginService.logout(userId);
 

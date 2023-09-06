@@ -17,6 +17,9 @@ router.post(
 // 회사 정보 조회
 router.get('/companies', companyController.getCompanyInfo);
 
+// 나의 회사 정보 조회
+router.get('/myCompanies/', authorized, companyController.getMyCompany);
+
 // 회사 정보 수정, 회사 및 관리자 전용
 router.put('/companies/:companyId', companyController.updateCompanyInfo);
 

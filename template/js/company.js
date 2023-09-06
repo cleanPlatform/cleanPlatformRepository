@@ -1,9 +1,54 @@
+//  소유한 업장 불러오기
+async function onPageLoad() {
+  await getMyCompanyList();
+}
+
+document.addEventListener('DOMContentLoaded', onPageLoad);
+
+async function getMyCompanyList() {
+  try {
+    const myCompanyList = await fetch(`/api/company/MyCompanies`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (myCompanyList.ok) {
+      // status 가 200~299 인 경우만.
+      const responseData = await myCompanyList.json();
+      const myCompanies = responseData.data;
+
+      // myCompanyList 에 붙일 div
+      const myCompanyListContainer = document.querySelector('.myCompanyList');
+
+      // 기존 내용 비우기
+      // myCompanyListContainer.innerHTML = '';
+
+      // 한줄한줄 만들기
+      myCompanies.forEach((company) => {
+        const companyName = company.companyName;
+        const modalContent = `
+          <div class="companyList">
+              <div>${companyName}　</div>
+              <button>조회</button>
+          </div>
+        `;
+        myCompanyListContainer.innerHTML += modalContent;
+      });
+    } else {
+      console.error('응답이 실패했습니다.', myCompanyList.status);
+    }
+  } catch (err) {
+    console.error('에러 :', err);
+  }
+}
+
 //  업장 등록하기
 async function createCompany() {
-  console.log('업장등록 함수 시작');
   const companyName = document.querySelector('#createCompany-name').value;
   const address = document.querySelector('#createCompany-adress').value;
   const phoneNumber = document.querySelector('#createCompany-phoneNumber').value;
+
   console.log(companyName, address, phoneNumber);
 
   const response = await fetch(`/api/company/companies`, {
@@ -17,10 +62,8 @@ async function createCompany() {
       phoneNumber,
     }),
   });
-  console.log('api 요청 지나감');
   const result = await response.json();
-  //  console.log("@@@@@@@@@=>",response)
-  // console.log(result.message);
+  console.log(result);
 
   window.location.reload();
   return alert(result.message);
@@ -28,7 +71,7 @@ async function createCompany() {
 
 // '업장 등록하기' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
 document
-  .querySelector('.btn-primary[data-target="#createCompany"]')
+  .querySelector('.btn.btn-primary[data-target="#createCompany"]')
   .addEventListener('click', function () {
     showModal(
       'createCompany',

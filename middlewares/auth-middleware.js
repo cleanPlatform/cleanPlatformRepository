@@ -62,20 +62,26 @@ const permissionCache = require('../cache/permissionCache');
 // };
 
 exports.authorized = async (req, res, next) => {
+  console.log('미들웨어 진입');
   const authToken = req.cookies.Authorization;
-  const authType = authToken.split(' ')[0];
-  const token = authToken.split(' ')[1];
 
   if (!authToken) {
     return res.status(403).json({ errorMessage: '권한이 존재하지 않습니다.' });
   }
+
+  const authType = authToken.split(' ')[0];
+  const token = authToken.split(' ')[1];
+  console.log('쿠키 분석 완료');
 
   if (authType !== 'Bearer') {
     return res.status(403).json({ errorMessage: '로그인 토큰이 잘못되었습니다.' });
   }
 
   try {
+    console.log('트라이 문 진입');
     const { userId, email } = jwt.verify(token, process.env.COOKIE_SECRET);
+    console.log(userId, email);
+    console.log('인즈완료');
     res.locals.userId = userId;
     res.locals.email = email;
     next();
@@ -84,36 +90,6 @@ exports.authorized = async (req, res, next) => {
     res.status(400).json({ errorMessage: '잘못된 접근입니다.' });
   }
 };
-
-// exports.isLoggedIn = async (req, res, next) => {
-//   const { authorization } = req.headers;
-
-//   if (!authorization) {
-//     res.locals.isLoggedIn = false;
-//     next();
-//     return;
-//   }
-
-//   const [authType, authToken] = (authorization ?? '').split(' ');
-
-//   if (!authorization || authType !== 'Bearer' || !authToken) {
-//     res.locals.isLoggedIn = false;
-//     next();
-//     return;
-//   }
-
-//   try {
-//     const { user } = jwt.verify(authToken, process.env.COOKIE_SECRET);
-
-//     res.locals.isLoggedIn = true;
-//     res.locals.userId = user.userId;
-//     next();
-//   } catch (err) {
-//     console.error(err);
-//     res.locals.isLoggedIn = false;
-//     next();
-//   }
-// };
 
 exports.hasMinimumPermission = (permission) => {
   return async (req, res, next) => {
