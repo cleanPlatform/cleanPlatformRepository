@@ -91,7 +91,8 @@ document
 //  로그인이 되어 있으면 로그인 버튼을 숨기고 로그아웃 버튼을 보인다.
 document.addEventListener('DOMContentLoaded', function () {
   const authorizationToken = getCookie('Authorization');
-  const permission = sessionStorage.getItem('permission');
+  // const permission = sessionStorage.getItem('permission');
+  const permission = getCookie('permission');
 
   if (authorizationToken) {
     const loginButton = document.querySelector('.btn-primary[data-target="#logIn"]');

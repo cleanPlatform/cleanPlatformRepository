@@ -19,7 +19,7 @@ async function logIn() {
   console.log('loginToken :', result.permission);
 
   if (response.status == 200) {
-    sessionStorage.setItem('permission', result.permission);
+    // sessionStorage.setItem('permission', result.permission);
     location.reload();
   }
 
@@ -58,15 +58,15 @@ async function logOut() {
   console.log('로그아웃 함수 시작');
 
   const response = await fetch(`/api/sign/signout`, {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  // Bearer 형식의 JWT 토큰을 삭제하고, 세션 스토리지의 permission 삭제
+  // Bearer 형식의 JWT 토큰을 삭제하고, permission 삭제
   removeBearerTokenCookie();
-  sessionStorage.removeItem('permission');
+  // sessionStorage.removeItem('permission');
 
   console.log('로그아웃 되었습니다.');
 
@@ -77,11 +77,14 @@ async function logOut() {
 // Bearer 제거
 function removeBearerTokenCookie() {
   const cookies = document.cookie.split(';');
+  console.log(cookies);
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();
     if (cookie.startsWith('Authorization=Bearer')) {
       document.cookie = 'Authorization=; expires=Thu, 01 Jan 2000 00:00:00 UTC; path=/;';
-      return;
+    }
+    if (cookie.startsWith('permission')) {
+      document.cookie = 'permission=;';
     }
   }
 }
