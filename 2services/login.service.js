@@ -22,14 +22,12 @@ class LoginService {
         throw new ApiError(409, errorMessage);
       }
 
-      console.log('isExistUser.permission :', isExistUser.permission);
-
-      // 토큰생성
-      let token = jwt.sign(
+      // 엑세스 토큰생성
+      let acessToken = jwt.sign(
         {
           email: isExistUser.email,
           userId: isExistUser.userId,
-          // permission: isExistUser.permission,
+          permission: isExistUser.permission,
         },
         process.env.COOKIE_SECRET,
         {
@@ -37,17 +35,27 @@ class LoginService {
         }
       );
 
-      const permission = isExistUser.permission;
-      const TYPE = 'Bearer';
-      token = TYPE + ' ' + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
-      return { token, permission };
+      function bearer(token) {
+        const TYPE = 'Bearer';
+        token = TYPE + ' ' + token;
+        return token;
+      }
+
+      // 리프래시 토큰생성
+      let RefreshToken = jwt.sign({}, process.env.COOKIE_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: process.env.JWT_EXPIRE_TIME2,
+      });
+
+      acessToken = bearer(acessToken);
+      RefreshToken = bearer(RefreshToken);
+
+      return { acessToken, RefreshToken };
     } catch (err) {
       console.log(err);
-      // return res.status(err.status).json({ message: err.message });
       throw new Error(err);
-      // return { status: err.status, message: err.message };
     }
   };
 

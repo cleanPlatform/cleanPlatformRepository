@@ -1,68 +1,7 @@
-// const jwt = require('jsonwebtoken');
-// const { User } = require('../models');
-
-// // 사용자 인증 미들웨어
-// module.exports = async (req, res, next) => {
-//   const {Authorization} = req.cookies;
-//   const [authType, authToken] = (Authorization ?? '').split(' ');
-
-//   if (!authToken || authType !== 'Bearer') {
-//     res.status(403).send({
-//       errorMessage: '로그인이 필요한 기능입니다.',
-//     });
-//     return;
-//   }
-
-//   try {
-//     const {userId} = jwt.verify(authToken, process.env.COOKIE_SECRET);
-//     const user = await User.findOne({where: {userId}});
-//     if (!user) {
-//       res.clearCookie('Authorization');
-//       return res.status(401).json({errorMessage: '토큰 사용자가 존재하지 않습니다.'});
-//     }
-//     res.locals.user = user;
-//     next();
-//   } catch (err) {
-//     console.error(err);
-//     res.clearCookie('Authorization');
-//     res.status(403).send({
-//       errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.',
-//     });
-//   }
-// };
-
 const jwt = require('jsonwebtoken');
 const permissionCache = require('../cache/permissionCache');
 
-// exports.authorized = async (req, res, next) => {
-//   const { authorization } = req.headers;
-
-//   console.log('authorization :', authorization);
-
-//   if (!authorization) {
-//     return res.status(403).json({ errorMessage: '권한이 존재하지 않습니다.' });
-//   }
-//   const [authType, authToken] = (authorization ?? '').split(' ');
-//   // console.log('authType :', authType);
-//   // console.log('authToken :', authToken);
-
-//   if (authType !== 'Bearer' || !authToken) {
-//     return res.status(403).json({ errorMessage: '로그인이 필요한 기능입니다' });
-//   }
-
-//   try {
-//     const { userId, email } = jwt.verify(authToken, process.env.COOKIE_SECRET);
-//     res.locals.userId = userId;
-//     res.locals.email = email;
-//     next();
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).json({ errorMessage: '잘못된 접근입니다.' });
-//   }
-// };
-
 exports.authorized = async (req, res, next) => {
-  console.log('미들웨어 진입');
   const authToken = req.cookies.Authorization;
 
   if (!authToken) {
@@ -71,23 +10,24 @@ exports.authorized = async (req, res, next) => {
 
   const authType = authToken.split(' ')[0];
   const token = authToken.split(' ')[1];
-  console.log('쿠키 분석 완료');
 
   if (authType !== 'Bearer') {
     return res.status(403).json({ errorMessage: '로그인 토큰이 잘못되었습니다.' });
   }
 
   try {
-    console.log('트라이 문 진입');
-    const { userId, email } = jwt.verify(token, process.env.COOKIE_SECRET);
-    console.log(userId, email);
-    console.log('인즈완료');
-    res.locals.userId = userId;
-    res.locals.email = email;
+    const decode = this.decode(req, token, process.env.COOKIE_SECRET, res);
+
+    res.locals.userId = decode.userId;
+    res.locals.email = decode.email;
     next();
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ errorMessage: '잘못된 접근입니다.' });
+    if (error.name === 'TokenExpiredError') {
+      console.log('jwt 유효기간 만료');
+    } else {
+      console.log(error);
+      res.status(400).json({ errorMessage: '잘못된 접근입니다.' });
+    }
   }
 };
 
@@ -121,4 +61,93 @@ exports.hasMinimumPermission = (permission) => {
       res.status(400).json({ errorMessage: '잘못된 접근입니다.' });
     }
   };
+};
+
+exports.isLogin = (req, res, next) => {
+  const authToken = req.cookies.Authorization;
+
+  if (!authToken) {
+    res.locals.look = 0;
+    return next();
+  }
+
+  const authType = authToken.split(' ')[0];
+  const token = authToken.split(' ')[1];
+
+  if (authType !== 'Bearer') {
+    return res.status(403).json({ errorMessage: '로그인 토큰이 잘못되었습니다.' });
+  }
+
+  const decode = this.decode(req, token, process.env.COOKIE_SECRET, res);
+
+  if (!decode) {
+    return res.status(403).json({ errorMessage: '리프레시 토큰이 만료 되었습니다.' });
+  }
+
+  const permission = decode.permission;
+
+  if (permission === 'guest') {
+    res.locals.look = 1;
+  } else if (permission === 'owner') {
+    res.locals.look = 2;
+  } else if (permission === 'admin') {
+    res.locals.look = 3;
+  } else {
+    res.locals.look = 0;
+  }
+
+  next();
+};
+
+exports.decode = (req, token, cookie_secret, res) => {
+  try {
+    const decode = jwt.verify(token, cookie_secret);
+    return decode;
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      console.log('엑세스 토큰이 만료되었습니다.');
+
+      const refreshToken = req.cookies.refresh;
+      console.log(refreshToken);
+      const reToken = refreshToken.split(' ')[1];
+
+      try {
+        jwt.verify(reToken, cookie_secret);
+        const decode = jwt.decode(token, cookie_secret);
+        console.log('리프레시 토큰 검증 성공');
+
+        let accessToken = jwt.sign(
+          {
+            email: decode.email,
+            userId: decode.userId,
+            permission: decode.permission,
+          },
+          process.env.COOKIE_SECRET,
+          {
+            expiresIn: process.env.JWT_EXPIRE_TIME,
+          }
+        );
+
+        console.log(accessToken);
+
+        permissionCache.setPermissionCache(decode.userId);
+
+        function bearer(token) {
+          const TYPE = 'Bearer';
+          token = TYPE + ' ' + token;
+          return token;
+        }
+
+        accessToken = bearer(accessToken);
+
+        res.cookie('Authorization', accessToken, { httpOnly: true, sameSite: 'strict' });
+
+        return accessToken;
+      } catch (error) {
+        console.error('리프레시 토111큰 검증 오류:', error);
+      }
+    } else {
+      console.error('토큰 검증 오류:', err);
+    }
+  }
 };

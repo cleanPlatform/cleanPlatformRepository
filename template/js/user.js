@@ -1,3 +1,35 @@
+//  로그인 상태에 따라서 다르게 버튼을 보여줌
+function isLogin() {
+  fetch('/data')
+    .then((response) => response.json())
+    .then((data) => {
+      var lookValue = data.look;
+
+      var loginButton = document.getElementById('loginButton');
+      var logoutButton = document.getElementById('logoutButton');
+      var signupButton = document.getElementById('signupButton');
+      var myCompanyButton = document.getElementById('myCompanyButton');
+
+      if (lookValue === 0) {
+        logoutButton.style.display = 'none';
+        myCompanyButton.style.display = 'none';
+      } else if (lookValue >= 1) {
+        logoutButton.style.display = 'block';
+        myCompanyButton.style.display = 'block';
+        loginButton.style.display = 'none';
+        signupButton.style.display = 'none';
+      }
+    })
+    .catch((error) => {
+      console.error('데이터 가져오기 오류:', error);
+    });
+}
+
+// 페이지 로드 시 스크립트 실행
+window.onload = function () {
+  isLogin();
+};
+
 //  회원가입
 async function signUp() {
   console.log('회원가입 함수 시작');

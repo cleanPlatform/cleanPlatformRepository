@@ -10,8 +10,18 @@ class LoginController {
 
     try {
       const token = await this.loginService.login(email, password);
-      res.cookie('Authorization', token.token);
-      res.cookie('permission', token.permission);
+      console.log('token :', token);
+
+      res.cookie('Authorization', token.acessToken, {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+
+      res.cookie('refresh', token.RefreshToken, {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+
       res.status(200).json({ message: `로그인에 성공했습니다.` });
     } catch (err) {
       console.log('컨트롤러 err :', err);
@@ -32,7 +42,11 @@ class LoginController {
     try {
       await this.loginService.logout(userId);
 
-      res.removeHeader('Authorization');
+      console.log('userId :', userId);
+      // res.clearCookie('Authorization', 'SignIn', 'refresh');
+      res.clearCookie('Authorization');
+      res.clearCookie('SignIn');
+      res.clearCookie('refresh');
 
       return res.status(200).json({ message: '로그아웃에 성공하였습니다.' });
     } catch (err) {

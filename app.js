@@ -4,8 +4,10 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const path = require('path');
-
 const nunjucks = require('nunjucks');
+const jwt = require('jsonwebtoken');
+
+const { isLogin } = require('./middlewares/auth-middleware');
 
 require('dotenv').config();
 
@@ -45,8 +47,14 @@ app.use('/api', router);
 app.use('/devapi', devRouter);
 ``;
 
+app.use(isLogin);
+
 app.get('/', (req, res) => {
   res.render('user.html', {});
+});
+
+app.get('/data', (req, res) => {
+  res.json({ look: res.locals.look });
 });
 
 app.get('/myCompany', (req, res) => {

@@ -18,3 +18,9 @@ div.input-group input {
   grid-template-columns: 120px 80px;
   text-align: right;
 }
+
+.userDiv {
+  display: grid;
+  grid-template-columns: 100px 100px;
+  text-align: right;
+}
