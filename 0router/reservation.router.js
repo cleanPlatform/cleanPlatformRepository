@@ -7,24 +7,22 @@ const reservationController = new ReservationController();
 
 // 예약 등록
 router.post(
-  '/:companyId/reservations',
-  authorized,
+  '/',
+  //   authorized,
   reservationController.createReservation
 );
 
-// 예약 조회
+// 업체 예약 조회
 router.get('/:companyId/reservations', reservationController.getCompanyReservations);
-// 예약 수정 :고객 본인만 변경 가능
+
+// 예약 수정
 router.put(
   '/:companyId/reservations/:reservationId',
   authorized,
   reservationController.editReservation
 );
-// 예약 상태 변경 : id가 고객/사장이냐에 따라서 달라짐
-// router.patch(
-//   '/companies/:companyId/reservations/:reservationId',
-//   reservationController.cancelReservation
-// );
+
+// soft delete를 해서 취소 요청에 대한 기록도 남기는 것이 좋을 것인가?
 router.delete(
   '/:companyId/reservations/:reservationId',
   authorized,

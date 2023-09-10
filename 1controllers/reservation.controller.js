@@ -7,19 +7,13 @@ class ReservationController {
   reservationService = new ReservationService();
 
   createReservation = async (req, res, next) => {
-    const { offerId, date, extraRequests } = req.body;
-    const { companyId } = req.params;
-    const userId = res.locals.userId;
-
-    // companyId가 있는지 없는지 확인하는 작업도 필요함.
+    // const { offerId, date, extraRequests } = req.body;
+    const { offerId, reservationDate, extraRequests } = req.body;
+    // const userId = res.locals.userId;
+    const userId = 10; // 임시로 작성. 후에 위에 13번째 줄의 코드로 이용해야 함
+    
     try {
-      await this.reservationService.createReservation(
-        userId,
-        offerId,
-        companyId,
-        date,
-        extraRequests
-      );
+      await this.reservationService.createReservation(userId, offerId, reservationDate, extraRequests);
 
       return res.status(201).send();
     } catch (err) {
@@ -36,10 +30,12 @@ class ReservationController {
 
   // 회사 예약 내역 확인
   getCompanyReservations = async (req, res, next) => {
-    const { companyId } = req.params;
+    // 추후 사용할지 안할지 결정해야 해서 주석으로 달아놓음
+    // const { companyId } = req.params;
+    const { offerId, year, month } = req.query;
 
     try {
-      const result = await this.reservationService.getCompanyReservations(companyId);
+      const result = await this.reservationService.getCompanyReservations(offerId, year, month);
 
       return res.status(201).json({ data: result });
     } catch (err) {
@@ -74,6 +70,9 @@ class ReservationController {
     }
   };
 
+  // 컨트롤러에서 캐쉬를 읽어서 서비스로 넘기는 것이 좋을까?
+  // 아니면 서비스에서 바로 캐쉬를 읽어들이는 것이 좋을까?
+  // 우선 서비스에서 캐쉬를 읽도록 구현
   editReservation = async (req, res, next) => {
     const { offerId, date, extraRequests } = req.body;
     const { reservationId } = req.params;
