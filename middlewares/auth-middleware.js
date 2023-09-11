@@ -127,6 +127,9 @@ exports.decode = (req, token, cookie_secret, res) => {
 
         return accessToken;
       } catch (error) {
+        console.log;
+        const decode = jwt.decode(token, cookie_secret);
+        permissionCache.clearCache(decode.userId);
         res.clearCookie('Authorization');
         res.clearCookie('SignIn');
         res.clearCookie('refresh');
