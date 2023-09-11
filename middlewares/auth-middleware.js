@@ -81,7 +81,7 @@ exports.isLogin = (req, res, next) => {
   const decode = this.decode(req, token, process.env.COOKIE_SECRET, res);
 
   if (!decode) {
-    return res.status(403).json({ errorMessage: '리프레시 토큰이 만료 되었습니다.' });
+    return res.status(403).json({ errorMessage: '로그인 오류!' });
   }
 
   const permission = decode.permission;
@@ -116,38 +116,45 @@ exports.decode = (req, token, cookie_secret, res) => {
         const decode = jwt.decode(token, cookie_secret);
         console.log('리프레시 토큰 검증 성공');
 
-        let accessToken = jwt.sign(
-          {
-            email: decode.email,
-            userId: decode.userId,
-            permission: decode.permission,
-          },
-          process.env.COOKIE_SECRET,
-          {
-            expiresIn: process.env.JWT_EXPIRE_TIME,
-          }
-        );
-
-        console.log(accessToken);
+        // 엑세스 토큰생성
+        let accessToken = this.makeAccessToken(decode);
 
         permissionCache.setPermissionCache(decode.userId);
 
-        function bearer(token) {
-          const TYPE = 'Bearer';
-          token = TYPE + ' ' + token;
-          return token;
-        }
-
-        accessToken = bearer(accessToken);
+        accessToken = this.bearer(accessToken);
 
         res.cookie('Authorization', accessToken, { httpOnly: true, sameSite: 'strict' });
 
         return accessToken;
       } catch (error) {
+        res.clearCookie('Authorization');
+        res.clearCookie('SignIn');
+        res.clearCookie('refresh');
         console.error('리프레시 토111큰 검증 오류:', error);
       }
     } else {
       console.error('토큰 검증 오류:', err);
     }
   }
+};
+
+exports.bearer = (token) => {
+  const TYPE = 'Bearer';
+  token = TYPE + ' ' + token;
+  return token;
+};
+
+exports.makeAccessToken = (info) => {
+  let accessToken = jwt.sign(
+    {
+      email: info.email,
+      userId: info.userId,
+      permission: info.permission,
+    },
+    process.env.COOKIE_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE_TIME,
+    }
+  );
+  return accessToken;
 };

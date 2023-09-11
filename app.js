@@ -36,6 +36,7 @@ nunjucks.configure('template', {
 });
 
 app.use('/template', express.static(path.join(__dirname, 'template')));
+// app.use(express.static(path.join(__dirname, 'template')));
 
 app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));

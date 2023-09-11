@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 
 const permissionCache = require('../cache/permissionCache');
 const UserRepository = require('../3repositories/user.repository');
+const { bearer, makeAccessToken } = require('../middlewares/auth-middleware');
 
 class LoginService {
   userRepository = new UserRepository();
@@ -23,25 +24,9 @@ class LoginService {
       }
 
       // 엑세스 토큰생성
-      let acessToken = jwt.sign(
-        {
-          email: isExistUser.email,
-          userId: isExistUser.userId,
-          permission: isExistUser.permission,
-        },
-        process.env.COOKIE_SECRET,
-        {
-          expiresIn: process.env.JWT_EXPIRE_TIME,
-        }
-      );
+      let accessToken = makeAccessToken(isExistUser);
 
       permissionCache.setPermissionCache(isExistUser.userId);
-
-      function bearer(token) {
-        const TYPE = 'Bearer';
-        token = TYPE + ' ' + token;
-        return token;
-      }
 
       // 리프래시 토큰생성
       let RefreshToken = jwt.sign({}, process.env.COOKIE_SECRET, {
@@ -49,10 +34,10 @@ class LoginService {
         expiresIn: process.env.JWT_EXPIRE_TIME2,
       });
 
-      acessToken = bearer(acessToken);
+      accessToken = bearer(accessToken);
       RefreshToken = bearer(RefreshToken);
 
-      return { acessToken, RefreshToken };
+      return { accessToken, RefreshToken };
     } catch (err) {
       console.log(err);
       throw new Error(err);
