@@ -20,6 +20,7 @@ exports.authorized = async (req, res, next) => {
 
     res.locals.userId = decode.userId;
     res.locals.email = decode.email;
+    res.locals.permission = decode.permission;
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
@@ -127,13 +128,12 @@ exports.decode = (req, token, cookie_secret, res) => {
 
         return accessToken;
       } catch (error) {
-        console.log;
         const decode = jwt.decode(token, cookie_secret);
         permissionCache.clearCache(decode.userId);
         res.clearCookie('Authorization');
         res.clearCookie('SignIn');
         res.clearCookie('refresh');
-        console.error('리프레시 토111큰 검증 오류:', error);
+        console.error('리프레시 토큰 검증 오류:', error);
       }
     } else {
       console.error('토큰 검증 오류:', err);
