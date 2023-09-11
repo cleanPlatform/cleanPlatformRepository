@@ -1,8 +1,15 @@
 const { Reservation } = require('../0models');
+const { Op } = require('sequelize');
 
 class ReservationRepository {
-  createReservation = async (userId, offerId, companyId, date, extraRequests) => {
-    const result = await Reservation.create({ userId, offerId, companyId, date, extraRequests });
+  createReservation = async (userId, offerId, date, extraRequests) => {
+    const result = await Reservation.create({
+      userId,
+      offerId,
+      date,
+      extraRequests,
+      status: 'reserved',
+    });
 
     return result;
   };
@@ -16,8 +23,20 @@ class ReservationRepository {
 
   // date의 수와 업체에서 할당 가능한 업체의 수 사이의 관계를 어떻게 처리할지 생각하기
   // 이러한 부분은 예약을 하는 부분도 같이 고려가 되어야 함
-  getCompanyReservations = async (companyId) => {
-    const result = await Reservation.findAll({ attributes: ['date'] }, { where: { companyId } });
+  getCompanyReservations = async (offerId, beginningDateOfMonth, beginningDateOfNextMonth) => {
+    // const result = await Reservation.findAll({ attributes: ['date'] }, { where: { companyId,  } });
+    const result = await Reservation.findAll({
+      attributes: ['date'],
+      where: {
+        offerId,
+        date: {
+          [Op.and]: {
+            [Op.gte]: beginningDateOfMonth.toISOString(),
+            [Op.lt]: beginningDateOfNextMonth.toISOString(),
+          },
+        },
+      },
+    });
 
     return result;
   };
