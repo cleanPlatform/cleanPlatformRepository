@@ -23,7 +23,6 @@ class CompanyRepository {
   // userId로 회사 조회
   companyId = async (userId) => {
     try {
-      console.log('userId :', userId);
       const getAllCompany = await Company.findAll({
         where: { userId: userId },
       });

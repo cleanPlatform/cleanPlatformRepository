@@ -19,7 +19,6 @@ async function logIn() {
   console.log('loginToken :', result);
 
   if (response.status == 200) {
-    // sessionStorage.setItem('permission', result.permission);
     location.reload();
   }
 
@@ -63,10 +62,6 @@ async function logOut() {
       'Content-Type': 'application/json',
     },
   });
-
-  // Bearer 형식의 JWT 토큰을 삭제하고, permission 삭제
-  // removeBearerTokenCookie();
-  // sessionStorage.removeItem('permission');
 
   console.log('로그아웃 되었습니다.');
 

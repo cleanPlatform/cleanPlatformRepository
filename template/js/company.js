@@ -47,12 +47,39 @@ async function getMyCompanyList() {
 
       // 한줄한줄 만들기
       myCompanies.forEach((company) => {
-        const companyName = company.companyName;
+        console.log('myCompanies :', myCompanies);
+        const compnayName = company.companyName;
         const modalContent = `
           <div class="companyList">
-              <div>${companyName}　</div>
-              <button>조회</button>
+              <div>${company.companyName}　</div>
+              <button onclick="toggleUpdateMyCompany(${company.companyId})">조회/수정</button>
+              <button onclick="companyServices(${company.companyId} , '${compnayName}')">서비스 관리 페이지</button>
+              <button onclick="deleteMyCompany(${company.companyId} , '${compnayName}')">삭제</button>
+              </div>
+          <div id="updateMyCompany${company.companyId}" style="display: none">
+            <div class="input-group">
+              <label for="update-name">업장 번호　</label>
+              <div style=" text-align: left">${company.companyId}</div>
+            </div>
+            <div class="input-group">
+              <label for="update-name">업장명　</label>
+              <input id="update-name" type="text" placeholder="업장 명칭" value="${company.companyName}">
+            </div>
+            <div class="input-group">
+              <label for="update-address">업장 주소　</label>
+              <input id="update-address" type="text" placeholder="업장 소재지" value="${company.address}">
+            </div>
+            <div class="input-group">
+              <label for="update-phone">업장 전화번호　</label>
+              <input id="update-phone" type="text" placeholder="업장 대표 번호" value="${company.phoneNumber}">
+            </div>
+            <div class="input-group">
+              <div>　</div>
+              <button onclick="updateMyCompany(${company.companyId})">정보 업데이트 하기</button>
+            </div>
+            <br>
           </div>
+         
         `;
         myCompanyListContainer.innerHTML += modalContent;
       });
@@ -61,6 +88,72 @@ async function getMyCompanyList() {
     }
   } catch (err) {
     console.error('에러 :', err);
+  }
+}
+
+//  업장 수정 펼치기
+async function toggleUpdateMyCompany(id) {
+  var updateCompanyInfo = document.getElementById(`updateMyCompany${id}`);
+
+  let displayNow = updateCompanyInfo.style.display;
+
+  if (displayNow === 'none') {
+    displayNow = '';
+  } else {
+    displayNow = `none`;
+  }
+
+  updateCompanyInfo.style.display = displayNow;
+}
+
+//  업장수정하기
+async function updateMyCompany(companyId) {
+  console.log('업장 수정하기');
+  const companyName = document.querySelector(`#update-name`).value;
+  const address = document.querySelector(`#update-address`).value;
+  const phoneNumber = document.querySelector(`#update-phone`).value;
+
+  const response = await fetch(`/api/company/companies/${companyId}`, {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      companyName,
+      address,
+      phoneNumber,
+    }),
+  });
+  const result = await response.json();
+  console.log(result.message);
+  window.location.reload();
+  return alert(result.message);
+}
+
+//  서비스 창으로
+async function companyServices(companyId, compnayName) {
+  window.location.href = `/companyService?companyId=${companyId}&companyName=${compnayName}`;
+}
+
+//  업장 삭제하기
+
+async function deleteMyCompany(companyId, compnayName) {
+  const sureDelete = confirm(`정말로 회사명 '${compnayName}'을 삭제하시겠습니까?`);
+
+  if (sureDelete) {
+    const response = await fetch(`/api/company/companies/${companyId}`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sureDelete,
+      }),
+    });
+    const result = await response.json();
+    console.log(result.message);
+    window.location.reload();
+    return alert(result.message);
   }
 }
 
@@ -120,4 +213,11 @@ document
 </div>
 `
     );
+  });
+
+//  메인페이지로
+document
+  .querySelector('.btn-primary[data-target="#goToService"]')
+  .addEventListener('click', function () {
+    window.location.href = '/';
   });

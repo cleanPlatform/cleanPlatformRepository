@@ -13,14 +13,24 @@ div.input-group input {
   text-indent: 10px;
 }
 
+div.input-group button {
+  width: 200px;
+  height: 30px;
+  background-color: rgb(104, 104, 104);
+  border: 0;
+  color: rgb(0, 0, 0);
+  text-indent: 10px;
+}
+
 .companyList {
   display: grid;
-  grid-template-columns: 120px 80px;
+  grid-template-columns: 120px 90px 90px 90px;
   text-align: right;
 }
 
 .userDiv {
   display: grid;
+
   grid-template-columns: 100px 100px;
   text-align: right;
 }

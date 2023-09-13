@@ -14,20 +14,20 @@
 </head>
 
 <body>
-    <h1>회사 관리 페이지</h1>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCompany"
-        data-whatever="@mdo">업장 등록하기
+    <h1 id="companyIdHeader"> 회사명의 서비스 관리 페이지</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createService"
+        data-whatever="@mdo">서비스 등록하기
     </button>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#goToService"
-        data-whatever="@mdo">메인페이지로
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#goToMyCompany"
+        data-whatever="@mdo">내 회사 정보로
     </button>
 
-    <h1>나의 업장 목록</h1>
+    <h1>서비스 목록</h1>
     <div class="myCompanyList" data-target="#myCompanyList"></div>
 
 
     <script src='../template/js/modal.js'></script>
-    <script src="../template/js/company.js"></script>
+    <script src="../template/js/companyService.js"></script>
 
     <link href="../template/css/user.css" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

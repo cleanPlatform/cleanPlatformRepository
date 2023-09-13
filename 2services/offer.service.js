@@ -10,6 +10,7 @@ class OfferService {
 
   // 업체 서비스 생성
   createOffer = async (userId, companyId, offerName, offerNumber, price) => {
+    console.log('오퍼 서비스 진입');
     if (!offerName) {
       throw new ApiError(400, '업체 이름을 넣어주세요');
     }
@@ -21,17 +22,23 @@ class OfferService {
       throw new ApiError(400, '가격을 넣어주세요');
     }
 
+    console.log('오퍼 검증 통과');
+
     // 유저 조회 기능
     const findUser = await this.UserRepository.findUserOne(userId);
     if (!findUser) {
       throw new ApiError(401, ' 유저가 없습니다.');
     }
 
+    console.log('오퍼 유저조회 통과');
+
     // 업체 조회 기능
     const findeService = await this.CompanyRepository.searchOneCompany(companyId);
     if (!findeService) {
       throw new ApiError(401, ' 업체가 없습니다.');
     }
+
+    console.log('오퍼 업체조회 통과');
 
     // 업체 id랑 userid는 기능 생성 후 로직 추가 예정
     const createService = await this.OfferRepository.createOffer(

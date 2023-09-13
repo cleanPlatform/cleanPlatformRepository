@@ -28,7 +28,7 @@ class Offer extends Sequelize.Model {
         },
         headcount: {
           type: Sequelize.INTEGER,
-          allowNull: false,
+          allowNull: true,
         },
       },
       {

@@ -58,6 +58,8 @@ class CompanyController {
     const { userId } = res.locals.userId;
     const { companyName, address, phoneNumber } = req.body;
 
+    console.log(companyId, userId, companyName, address, phoneNumber);
+
     try {
       const updatedData = await this.companyService.updateCompanyInfo(
         companyId,

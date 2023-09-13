@@ -21,9 +21,9 @@ router.get('/companies', companyController.getCompanyInfo);
 router.get('/myCompanies/', authorized, companyController.getMyCompany);
 
 // 회사 정보 수정, 회사 및 관리자 전용
-router.put('/companies/:companyId', companyController.updateCompanyInfo);
+router.put('/companies/:companyId', authorized, companyController.updateCompanyInfo);
 
 // 회사 정보 삭제, 회사 및 관리자 전용
-router.delete('/companies/:companyId', companyController.deleteCompany);
+router.delete('/companies/:companyId', authorized, companyController.deleteCompany);
 
 module.exports = router;

@@ -8,6 +8,7 @@ const nunjucks = require('nunjucks');
 const jwt = require('jsonwebtoken');
 
 const { isLogin } = require('./middlewares/auth-middleware');
+const render = require('./middlewares/render');
 
 require('dotenv').config();
 
@@ -50,21 +51,13 @@ app.use('/devapi', devRouter);
 
 app.use(isLogin);
 
-app.get('/', (req, res) => {
-  res.render('user.html', {});
-});
+app.get('/', render.mainPage);
 
-app.get('/data', (req, res) => {
-  res.json({ look: res.locals.look });
-});
+app.get('/data', render.data);
 
-app.get('/myCompany', (req, res) => {
-  res.render('company.html', {});
-});
+app.get('/myCompany', render.myCompany);
 
-// app.get('/signup.html', (req, res) => {
-//   res.render('signup.html', {});
-// });
+app.get('/companyService', render.companySerivce);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

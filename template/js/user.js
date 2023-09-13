@@ -14,8 +14,8 @@ function isLogin() {
         logoutButton.style.display = 'none';
         myCompanyButton.style.display = 'none';
       } else if (lookValue >= 1) {
-        logoutButton.style.display = 'block';
-        myCompanyButton.style.display = 'block';
+        logoutButton.style.display = '';
+        myCompanyButton.style.display = '';
         loginButton.style.display = 'none';
         signupButton.style.display = 'none';
       }
