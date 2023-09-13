@@ -136,7 +136,6 @@ async function companyServices(companyId, compnayName) {
 }
 
 //  업장 삭제하기
-
 async function deleteMyCompany(companyId, compnayName) {
   const sureDelete = confirm(`정말로 회사명 '${compnayName}'을 삭제하시겠습니까?`);
 

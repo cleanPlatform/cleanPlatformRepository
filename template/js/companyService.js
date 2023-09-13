@@ -96,7 +96,7 @@ async function getMyCompanySerivceList() {
           <div class="companyList">
               <div>${compnayName}　</div>
               <button onclick="toggleUpdateMyCompanyService(${Id})">조회/수정</button>
-              <button onclick="deleteMyCompany(${Id} , '${compnayName}')">삭제</button>
+              <button onclick="deleteMyCompanyService(${Id} , '${compnayName}')">삭제</button>
               </div>
           <div id="updateMyCompany${Id}" style="display: none">
             <div class="input-group">
@@ -169,6 +169,24 @@ async function updateMyCompanyService(offerId, companyId) {
   console.log(result.message);
   window.location.reload();
   return alert(result.message);
+}
+
+//  서비스  삭제하기
+async function deleteMyCompanyService(companyId, compnayName) {
+  const sureDelete = confirm(`정말로 회사명 '${compnayName}'을 삭제하시겠습니까?`);
+
+  if (sureDelete) {
+    const response = await fetch(`/api/offer/companies/${companyId}`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    console.log(result.message);
+    window.location.reload();
+    return alert(result.message);
+  }
 }
 
 //  내 회사로
