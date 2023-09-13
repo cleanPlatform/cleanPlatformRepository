@@ -22,9 +22,16 @@ class CompanyRepository {
 
   // userId로 회사 조회
   companyId = async (userId) => {
-    return await Company.findOne({
-      where: { userId: userId },
-    });
+    try {
+      const getAllCompany = await Company.findAll({
+        where: { userId: userId },
+      });
+
+      return getAllCompany;
+    } catch (error) {
+      console.error('에러 발생:', error);
+      throw error;
+    }
   };
 
   // 회사 번호로 조회

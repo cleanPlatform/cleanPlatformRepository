@@ -4,8 +4,11 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const path = require('path');
-
 const nunjucks = require('nunjucks');
+const jwt = require('jsonwebtoken');
+
+const { isLogin } = require('./middlewares/auth-middleware');
+const render = require('./middlewares/render');
 
 require('dotenv').config();
 
@@ -34,6 +37,7 @@ nunjucks.configure('template', {
 });
 
 app.use('/template', express.static(path.join(__dirname, 'template')));
+// app.use(express.static(path.join(__dirname, 'template')));
 
 app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));
@@ -45,17 +49,15 @@ app.use('/api', router);
 app.use('/devapi', devRouter);
 ``;
 
-app.get('/', (req, res) => {
-  res.render('user.html', {});
-});
+app.use(isLogin);
 
-app.get('/myCompany', (req, res) => {
-  res.render('company.html', {});
-});
+app.get('/', render.mainPage);
 
-// app.get('/signup.html', (req, res) => {
-//   res.render('signup.html', {});
-// });
+app.get('/data', render.data);
+
+app.get('/myCompany', render.myCompany);
+
+app.get('/companyService', render.companySerivce);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

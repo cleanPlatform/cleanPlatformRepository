@@ -7,6 +7,6 @@ const loginController = new LoginController();
 const { authorized } = require('../middlewares/auth-middleware');
 
 router.post('/signin', loginController.login);
-router.post('/signout', authorized, loginController.logout);
+router.get('/signout', authorized, loginController.logout);
 
 module.exports = router;

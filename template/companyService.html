@@ -8,44 +8,28 @@
     <!-- 부트스트랩 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- 비밀번호 눈모양 -->
-    <!-- <link rel="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> -->
+    <title>나의 회사 관리 페이지</title>
 
 
-
-
-    <title>회원관련 페이지</title>
 </head>
 
 <body>
-
-    <h1>회원 정보 페이지</h1>
-    <div class="userDiv"> <button type="button" class="btn btn-primary" id="loginButton" data-toggle="modal"
-            data-target="#logIn" data-whatever="@mdo">로그인
-        </button>
-
-        <button type="button" class="btn btn-primary" id="logoutButton" data-toggle="modal" data-target="#logOut"
-            data-whatever="@mdo">로그아웃
-        </button>
-
-
-        <button type="button" class="btn btn-primary" id="signupButton" data-toggle="modal" data-target="#signUp"
-            data-whatever="@mdo">회원가입
-        </button>
-    </div>
-    <br>
-    <button type="button" class="btn btn-primary" id="myCompanyButton" data-toggle="modal" data-whatever="@mdo"
-        data-target="#myCompany">내 업장 관리
+    <h1 id="companyIdHeader"> 회사명의 서비스 관리 페이지</h1>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createService"
+        data-whatever="@mdo">서비스 등록하기
+    </button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#goToMyCompany"
+        data-whatever="@mdo">내 회사 정보로
     </button>
 
-
+    <h1>서비스 목록</h1>
+    <div class="myCompanyList" data-target="#myCompanyList"></div>
 
 
     <script src='../template/js/modal.js'></script>
-    <script src='../template/js/authenication.js'></script>
-    <script src='../template/js/user.js'></script>
+    <script src="../template/js/companyService.js"></script>
 
-    <link href=" ../template/css/user.css" rel="stylesheet" type="text/css" />
+    <link href="../template/css/user.css" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -55,7 +39,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
 
     <script src="https://cdn.socket.io/4.4.1/socket.io.js"></script>
 </body>

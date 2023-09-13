@@ -16,10 +16,9 @@ async function logIn() {
   });
   const result = await response.json();
 
-  console.log('loginToken :', result.permission);
+  console.log('loginToken :', result);
 
   if (response.status == 200) {
-    sessionStorage.setItem('permission', result.permission);
     location.reload();
   }
 
@@ -58,32 +57,16 @@ async function logOut() {
   console.log('로그아웃 함수 시작');
 
   const response = await fetch(`/api/sign/signout`, {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  // Bearer 형식의 JWT 토큰을 삭제하고, 세션 스토리지의 permission 삭제
-  removeBearerTokenCookie();
-  sessionStorage.removeItem('permission');
-
   console.log('로그아웃 되었습니다.');
 
   location.reload();
   alert('로그아웃 되었습니다.');
-}
-
-// Bearer 제거
-function removeBearerTokenCookie() {
-  const cookies = document.cookie.split(';');
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
-    if (cookie.startsWith('Authorization=Bearer')) {
-      document.cookie = 'Authorization=; expires=Thu, 01 Jan 2000 00:00:00 UTC; path=/;';
-      return;
-    }
-  }
 }
 
 // '로그아웃' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가

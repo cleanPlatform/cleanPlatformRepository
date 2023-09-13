@@ -10,8 +10,19 @@ class LoginController {
 
     try {
       const token = await this.loginService.login(email, password);
-      res.cookie('Authorization', token.token);
-      res.status(200).json({ message: `로그인에 성공했습니다.`, permission: token.permission });
+      console.log('token :', token);
+
+      res.cookie('Authorization', token.accessToken, {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+
+      res.cookie('refresh', token.RefreshToken, {
+        httpOnly: true,
+        sameSite: 'strict',
+      });
+
+      res.status(200).json({ message: `로그인에 성공했습니다.` });
     } catch (err) {
       console.log('컨트롤러 err :', err);
       if (err instanceof ApiError) {
@@ -28,11 +39,12 @@ class LoginController {
   //  로그아웃 핸들러
   logout = async (req, res) => {
     const userId = res.locals.userId;
-
     try {
       await this.loginService.logout(userId);
 
-      res.removeHeader('Authorization');
+      res.clearCookie('Authorization');
+      res.clearCookie('SignIn');
+      res.clearCookie('refresh');
 
       return res.status(200).json({ message: '로그아웃에 성공하였습니다.' });
     } catch (err) {

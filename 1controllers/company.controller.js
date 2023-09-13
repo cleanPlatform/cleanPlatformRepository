@@ -33,11 +33,32 @@ class CompanyController {
     }
   };
 
+  // 나의 회사 조회
+  getMyCompany = async (req, res) => {
+    try {
+      const userId = res.locals.userId;
+      const getAllCompanyService = await this.companyService.getMyCompany(userId);
+
+      return res.status(200).json({ data: getAllCompanyService });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
   // 회사 정보 수정
   updateCompanyInfo = async (req, res) => {
     const { companyId } = req.params;
     const { userId } = res.locals.userId;
     const { companyName, address, phoneNumber } = req.body;
+
+    console.log(companyId, userId, companyName, address, phoneNumber);
 
     try {
       const updatedData = await this.companyService.updateCompanyInfo(

@@ -1,3 +1,35 @@
+//  로그인 상태에 따라서 다르게 버튼을 보여줌
+function isLogin() {
+  fetch('/data')
+    .then((response) => response.json())
+    .then((data) => {
+      var lookValue = data.look;
+
+      var loginButton = document.getElementById('loginButton');
+      var logoutButton = document.getElementById('logoutButton');
+      var signupButton = document.getElementById('signupButton');
+      var myCompanyButton = document.getElementById('myCompanyButton');
+
+      if (lookValue === 0) {
+        logoutButton.style.display = 'none';
+        myCompanyButton.style.display = 'none';
+      } else if (lookValue >= 1) {
+        logoutButton.style.display = '';
+        myCompanyButton.style.display = '';
+        loginButton.style.display = 'none';
+        signupButton.style.display = 'none';
+      }
+    })
+    .catch((error) => {
+      console.error('데이터 가져오기 오류:', error);
+    });
+}
+
+// 페이지 로드 시 스크립트 실행
+window.onload = function () {
+  isLogin();
+};
+
 //  회원가입
 async function signUp() {
   console.log('회원가입 함수 시작');
@@ -88,46 +120,9 @@ document
     );
   });
 
-//  로그인이 되어 있으면 로그인 버튼을 숨기고 로그아웃 버튼을 보인다.
-document.addEventListener('DOMContentLoaded', function () {
-  const authorizationToken = getCookie('Authorization');
-  const permission = sessionStorage.getItem('permission');
-
-  if (authorizationToken) {
-    const loginButton = document.querySelector('.btn-primary[data-target="#logIn"]');
-    const logoutButton = document.querySelector('.btn-primary[data-target="#logOut"]');
-    if (loginButton) {
-      loginButton.style.display = 'none';
-    }
-    if (logoutButton) {
-      logoutButton.style.display = '';
-    }
-  }
-
-  // 사장으로 로그인 시 내 업장 관리 버튼 활성화
-  if (permission === 'owner') {
-    const myCompanyButton = document.querySelector('.btn-primary[data-target="#myCompany"]');
-    if (myCompanyButton) {
-      myCompanyButton.style.display = '';
-    }
-  }
-});
-
 //  업장으로 이동
 document
   .querySelector('.btn-primary[data-target="#myCompany"]')
   .addEventListener('click', function () {
     window.location.href = '/myCompany';
   });
-
-// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-function getCookie(name) {
-  const cookies = document.cookie.split(';');
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
-    if (cookie.startsWith(name + '=')) {
-      return cookie.substring(name.length + 1);
-    }
-  }
-  return null;
-}

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 
 const permissionCache = require('../cache/permissionCache');
 const UserRepository = require('../3repositories/user.repository');
+const { bearer, makeAccessToken } = require('../middlewares/auth-middleware');
 
 class LoginService {
   userRepository = new UserRepository();
@@ -22,32 +23,24 @@ class LoginService {
         throw new ApiError(409, errorMessage);
       }
 
-      console.log('isExistUser.permission :', isExistUser.permission);
+      // 엑세스 토큰생성
+      let accessToken = makeAccessToken(isExistUser);
 
-      // 토큰생성
-      let token = jwt.sign(
-        {
-          email: isExistUser.email,
-          userId: isExistUser.userId,
-          // permission: isExistUser.permission,
-        },
-        process.env.COOKIE_SECRET,
-        {
-          expiresIn: process.env.JWT_EXPIRE_TIME,
-        }
-      );
-
-      const permission = isExistUser.permission;
-      const TYPE = 'Bearer';
-      token = TYPE + ' ' + token;
       permissionCache.setPermissionCache(isExistUser.userId);
 
-      return { token, permission };
+      // 리프래시 토큰생성
+      let RefreshToken = jwt.sign({}, process.env.COOKIE_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: process.env.JWT_EXPIRE_TIME2,
+      });
+
+      accessToken = bearer(accessToken);
+      RefreshToken = bearer(RefreshToken);
+
+      return { accessToken, RefreshToken };
     } catch (err) {
       console.log(err);
-      // return res.status(err.status).json({ message: err.message });
       throw new Error(err);
-      // return { status: err.status, message: err.message };
     }
   };
 
