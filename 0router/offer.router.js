@@ -14,6 +14,8 @@ router.delete('/companies/:offerId', authorized, offerController.deleteOffer); /
 
 router.get('/companies', authorized, offerController.getOffer); // 전체 조회
 
+router.get('/companies/:companyId', authorized, offerController.myOffers); // 내 서비스 조회
+
 router.get('/companies/:offerId', authorized, offerController.onlyget); // 상세 조회
 
 module.exports = router;

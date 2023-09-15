@@ -43,7 +43,7 @@ class CompanyRepository {
 
   // 회사 번호로 조회2
   searchOneCompany2 = async (userId, companyId) => {
-    return await Company.findOne({
+    return await Company.findAll({
       where: { companyId: companyId, userId: userId },
     });
   };
