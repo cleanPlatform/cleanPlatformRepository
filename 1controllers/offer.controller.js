@@ -25,11 +25,11 @@ class OfferController {
       if (err instanceof ApiError) {
         console.error(err.message);
 
-        return res.status(err.status).send();
+        return res.status(err.status).json({ message: err.message });
       }
       console.error(err);
 
-      return res.status(500).json({ message: '서버 오류' });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -55,11 +55,11 @@ class OfferController {
       if (err instanceof ApiError) {
         console.error(err.message);
 
-        return res.status(err.status).send();
+        return res.status(err.status).json({ message: err.message });
       }
       console.error(err);
 
-      return res.status(500).json({ message: '서버 오류' });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -76,28 +76,31 @@ class OfferController {
       if (err instanceof ApiError) {
         console.error(err.message);
 
-        return res.status(err.status).send();
+        return res.status(err.status).json({ message: err.message });
       }
       console.error(err);
 
-      return res.status(500).json({ message: '서버 오류' });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
   // 업체 서비스 전체 조회
   getOffer = async (req, res, next) => {
+    const userId = res.locals.userId;
+    const { companyId } = req.params;
+    console.log('companyId :', companyId);
     try {
-      const findAllMessage = await this.offerService.findAllOffer();
+      const findAllMessage = await this.offerService.findAllOffer(userId, companyId);
       return res.status(201).json({ message: '조회 완료', data: findAllMessage });
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);
 
-        return res.status(err.status).send();
+        return res.status(err.status).json({ message: err.message });
       }
       console.error(err);
 
-      return res.status(500).json({ message: '서버 오류' });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -114,11 +117,11 @@ class OfferController {
       if (err instanceof ApiError) {
         console.error(err.message);
 
-        return res.status(err.status).send();
+        return res.status(err.status).json({ message: err.message });
       }
       console.error(err);
 
-      return res.status(500).json({ message: '서버 오류' });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 }

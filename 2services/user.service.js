@@ -5,6 +5,7 @@ const ApiError = require('../utils/apierror');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const util = require('util');
+
 const permissionCache = require('../cache/permissionCache');
 const {
   verificationPhoneNumber,
@@ -90,8 +91,7 @@ class UserService {
     // 비밀번호 일치 확인
     const isValidPassword = await bcrypt.compare(password, isExistUser.password);
     if (isValidPassword !== true) {
-      const errorMessage = '비밀번호가 일치하지 않습니다.';
-      throw new ApiError(409, errorMessage);
+      throw new ApiError(409, '비밀번호가 일치하지 않습니다.');
     }
 
     // 토큰생성
@@ -111,61 +111,61 @@ class UserService {
 
   //  회원 정보 조회 매서드
   referUserService = async (userId) => {
-    try {
-      const user = await this.userRepository.findUserOne(userId);
-      if (!user) {
-        throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
-      }
-
-      const message = '조회에 성공하였습니다.';
-
-      return { user, message };
-    } catch (err) {
-      console.log('서비스 err :', err);
-      throw new Error(err);
+    const user = await this.userRepository.findUserOne(userId);
+    if (!user) {
+      throw new ApiError(401, '존재하지 않는 로그인 이메일입니다.');
     }
+
+    const message = '조회에 성공하였습니다.';
+
+    return { user, message };
   };
 
   //  회원 정보 수정 매서드
-  updateUserService = async (updateData) => {
-    try {
-      const { userId, password, passwordConfirm, name, nickname, address, phoneNumber } =
-        updateData;
+  updateUserService = async (
+    userId,
+    password,
+    passwordConfirm,
+    name,
+    nickname,
+    address,
+    phoneNumber
+  ) => {
+    const user = await this.userRepository.findUserOne(userId);
+    if (!user) {
+      throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
+    }
 
-      const user = await this.userRepository.findUserOne(userId);
-      if (!user) {
-        throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
-      }
-
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (passwordMatch) {
-        throw new ApiError('기존 비밀번호와 다른 비밀번호를 입력해주세요.', 412);
-      }
-
+    if (password) {
       // 비밀번호 검증
       verificationPassword(password, passwordConfirm);
-
-      let hashPassword;
-      if (password) {
-        hashPassword = await bcrypt.hash(password, 6);
-      } else {
-        hashPassword = user.password;
-      }
-
-      // 전화번호 검증
-      verificationPhoneNumber(phoneNumber);
-
-      await this.userRepository.updateUserRepository(
-        userId,
-        hashPassword,
-        name,
-        nickname,
-        address,
-        phoneNumber
-      );
-    } catch (err) {
-      throw new Error(err);
     }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (passwordMatch) {
+      throw new ApiError(412, '기존 비밀번호와 다른 비밀번호를 입력해주세요.');
+    }
+
+    const salt = parseInt(process.env.SALT);
+
+    let hashPassword;
+    if (password) {
+      hashPassword = await bcrypt.hash(password, salt);
+    } else {
+      hashPassword = user.password;
+    }
+
+    // 전화번호 검증
+    verificationPhoneNumber(phoneNumber);
+
+    await this.userRepository.updateUserRepository(
+      userId,
+      hashPassword,
+      name,
+      nickname,
+      address,
+      phoneNumber
+    );
   };
 
   //  회원 탈퇴 핸들러
@@ -173,7 +173,7 @@ class UserService {
     try {
       const isExistUser = await this.userRepository.findUserOne(userId);
       if (!isExistUser) {
-        throw new ApiError('존재하지 않는 로그인 이메일입니다.', 401);
+        throw new ApiError(401, '존재하지 않는 로그인 이메일입니다.');
       }
 
       // 비밀번호 일치 확인

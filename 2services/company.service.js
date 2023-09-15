@@ -1,8 +1,8 @@
 const CompanyRepository = require('../3repositories/company.repository');
 
 const ApiError = require('../utils/apierror');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+
+const { verificationPhoneNumber } = require('../middlewares/verificationReg-middleware');
 
 class CompanyService {
   companyRepository = new CompanyRepository();
@@ -18,7 +18,10 @@ class CompanyService {
     if (!phoneNumber) {
       throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
-    console.log('userId: ', userId);
+
+    // 전화번호 검증
+    verificationPhoneNumber(phoneNumber);
+
     const addCompanyData = await this.companyRepository.addCompany(
       userId,
       companyName,
@@ -32,7 +35,6 @@ class CompanyService {
       companyName: addCompanyData.companyName,
       address: addCompanyData.address,
       phoneNumber: addCompanyData.phoneNumber,
-      // createdAt: addCompanyData.createdAt,
     };
   };
 
@@ -49,8 +51,6 @@ class CompanyService {
       createdAt: allCompany.createdAt,
       updatedAt: allCompany.updatedAt,
     };
-
-    // return allCompany;
   };
 
   //  나희 회사 조회
@@ -61,7 +61,7 @@ class CompanyService {
   };
 
   // 회사 정보 수정
-  updateCompanyInfo = async (companyId, userId, companyName, address, phoneNumber) => {
+  updateCompanyInfo = async (companyId, companyName, address, phoneNumber) => {
     const companyCheck = await this.companyRepository.searchOneCompany(companyId);
 
     if (!companyCheck) {
@@ -74,6 +74,9 @@ class CompanyService {
       throw new ApiError(400, '업체 연락처를 입력해주세요.');
     }
 
+    // 전화번호 검증
+    verificationPhoneNumber(phoneNumber);
+
     await this.companyRepository.updateCompanyInfo(
       companyId,
       userId,
@@ -81,18 +84,6 @@ class CompanyService {
       address,
       phoneNumber
     );
-
-    // const updatedData = await this.companyRepository.searchOneCompany(companyId);
-
-    // return {
-    //   companyId: updatedData.companyId,
-    //   userId: updatedData.userId,
-    //   companyName: updatedData.companyName,
-    //   address: updatedData.address,
-    //   phoneNumber: updatedData.phoneNumber,
-    //   createdAt: updatedData.createdAt,
-    //   updatedAt: updatedData.updatedAt,
-    // };
   };
 
   // 회사 정보 삭제

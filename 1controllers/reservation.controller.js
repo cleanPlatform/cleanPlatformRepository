@@ -11,9 +11,14 @@ class ReservationController {
     const { offerId, reservationDate, extraRequests } = req.body;
     // const userId = res.locals.userId;
     const userId = 10; // 임시로 작성. 후에 위에 13번째 줄의 코드로 이용해야 함
-    
+
     try {
-      await this.reservationService.createReservation(userId, offerId, reservationDate, extraRequests);
+      await this.reservationService.createReservation(
+        userId,
+        offerId,
+        reservationDate,
+        extraRequests
+      );
 
       return res.status(201).send();
     } catch (err) {

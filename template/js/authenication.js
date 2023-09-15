@@ -1,6 +1,5 @@
 //  로그인
 async function logIn() {
-  console.log('로그인 함수 시작');
   const email = document.querySelector('#login-email').value;
   const password = document.querySelector('#login-password').value;
 
@@ -15,8 +14,6 @@ async function logIn() {
     }),
   });
   const result = await response.json();
-
-  console.log('loginToken :', result);
 
   if (response.status == 200) {
     location.reload();
@@ -54,16 +51,12 @@ document.querySelector('.btn-primary[data-target="#logIn"]').addEventListener('c
 
 //  로그아웃
 async function logOut() {
-  console.log('로그아웃 함수 시작');
-
   const response = await fetch(`/api/sign/signout`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
-
-  console.log('로그아웃 되었습니다.');
 
   location.reload();
   alert('로그아웃 되었습니다.');

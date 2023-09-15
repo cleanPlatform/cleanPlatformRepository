@@ -77,56 +77,53 @@ async function signUp() {
 document
   .querySelector('.btn-primary[data-target="#signUp"]')
   .addEventListener('click', function () {
-    showModal(
-      'signUp',
-      '회원가입',
-      `
-      <form>
-      <div class="modal-body">
-          <div class="form-group">
-              <label for="permission" class="col-form-label">사업자/개인:</label>
-              <select id="signup-permission" name="선택">
-                  <option value='guest'>일반 회원</option>
-                  <option value='owner'>사업자 회원</option>
-              </select>
-          </div>
-          <div class="input-group">
-              <label for="signup-name">이름　</label>
-              <input id="signup-name" type="text" placeholder="홍길동" />
-          </div>
-          <div class="input-group">
-              <label for="signup-email">이메일　</label>
-              <input id="signup-email" type="email" placeholder="email@gmail.com" />
-          </div>
-          <div class="input-group">
-              <label for="signup-password">비밀번호　</label>
-              <input id="signup-password" type="password" placeholder="password" />
-          </div>
-          <div class="input-group">
-              <label for="signup-confirm-password">비밀번호 확인　</label>
-              <input id="signup-confirm-password" type="password" placeholder="confirm-password" />
-          </div>
-          <div class="input-group">
-              <label for="signup-nickname">닉네임　</label>
-              <input id="signup-nickname" type="text" placeholder="nickname" />
-          </div>
-          <div class="input-group">
-              <label for="signup-address">주소　</label>
-              <input id="signup-address" type="text" placeholder="XX시 XX로 XXXXX" />
-          </div>
-          <div class="input-group">
-              <label for="signup-phone-number">연락처　</label>
-              <input id="signup-phone-number" type="text" placeholder="010-XXXX-XXXX" />
-          </div>
+    const content = `
+<form>
+  <div class="modal-body">
+      <div class="form-group">
+          <label for="permission" class="col-form-label">사업자/개인:</label>
+          <select id="signup-permission" name="선택">
+              <option value='guest'>일반 회원</option>
+              <option value='owner'>사업자 회원</option>
+          </select>
       </div>
-  </form>
+      <div class="input-group">
+          <label for="signup-name">이름　</label>
+          <input id="signup-name" type="text" placeholder="홍길동" />
+      </div>
+      <div class="input-group">
+          <label for="signup-email">이메일　</label>
+          <input id="signup-email" type="email" placeholder="email@gmail.com" />
+      </div>
+      <div class="input-group">
+          <label for="signup-password">비밀번호　</label>
+          <input id="signup-password" type="password" placeholder="password" />
+      </div>
+      <div class="input-group">
+          <label for="signup-confirm-password">비밀번호 확인　</label>
+          <input id="signup-confirm-password" type="password" placeholder="confirm-password" />
+      </div>
+      <div class="input-group">
+          <label for="signup-nickname">닉네임　</label>
+          <input id="signup-nickname" type="text" placeholder="nickname" />
+      </div>
+      <div class="input-group">
+          <label for="signup-address">주소　</label>
+          <input id="signup-address" type="text" placeholder="XX시 XX로 XXXXX" />
+      </div>
+      <div class="input-group">
+          <label for="signup-phone-number">연락처　</label>
+          <input id="signup-phone-number" type="text" placeholder="010-XXXX-XXXX" />
+      </div>
   </div>
-  <div class="modal-footer">
-      <button id="signup-btn" type="submit" class="btn">Close</button>
-      <button type="button" class="btn btn-primary" onclick="signUp()">회원 가입</button>
-  </div>
-  `
-    );
+</form>
+</div>
+<div class="modal-footer">
+    <button id="signup-btn" type="submit" class="btn">Close</button>
+    <button type="button" class="btn btn-primary" onclick="signUp()">회원 가입</button>
+</div>
+`;
+    showModal('signUp', '회원가입', content);
   });
 
 // 회원 정보 수정 1
@@ -217,8 +214,9 @@ async function userUpdate(userId) {
     }),
   });
   const result = await response.json();
-  console.log(result.message);
-  window.location.reload();
+  if (response.status === 201) {
+    window.location.reload();
+  }
   return alert(result.message);
 }
 

@@ -52,7 +52,7 @@ class OfferRepository {
   destroyOffer = async (offerId, userId) => {
     try {
       const destroyRepository = await Offer.destroy({
-        where: { offerId },
+        where: { offerId, userId },
       });
 
       await t.commit();
@@ -64,8 +64,8 @@ class OfferRepository {
 
   // 업체 서비스 전체 조회
 
-  findAllOffer = async () => {
-    const offer = await Offer.findAll();
+  findAllOffer = async (companyId) => {
+    const offer = await Offer.findAll({ where: { companyId } });
 
     return offer;
   };

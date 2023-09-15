@@ -173,9 +173,11 @@ async function createCompany() {
     }),
   });
   const result = await response.json();
-  console.log(result);
 
-  window.location.reload();
+  if (response.status === 200) {
+    window.location.reload();
+  }
+
   return alert(result.message);
 }
 
