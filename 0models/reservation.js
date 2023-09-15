@@ -19,8 +19,8 @@ class Reservation extends Sequelize.Model {
           allowNull: false,
         },
         companyId: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
+          type: Sequelize.INTEGER,
+          allowNull: false,
         },
         date: {
           type: Sequelize.DATE,
@@ -34,6 +34,10 @@ class Reservation extends Sequelize.Model {
           type: Sequelize.STRING(200),
           allowNull: true,
         },
+        status: {
+            type: Sequelize.ENUM("canceled", "reserved"),
+            allowNull: false
+        }
       },
       {
         sequelize,

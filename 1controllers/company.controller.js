@@ -1,8 +1,5 @@
 const CompanyService = require('../2services/company.service');
-
 const ApiError = require('../utils/apierror');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 
 class CompanyController {
   companyService = new CompanyService();
@@ -11,7 +8,6 @@ class CompanyController {
   createCompany = async (req, res) => {
     const { companyName, address, phoneNumber } = req.body;
     const userId = res.locals.userId;
-
     try {
       const addCompanyData = await this.companyService.addCompany(
         userId,
@@ -21,8 +17,14 @@ class CompanyController {
       );
 
       return res.status(200).json({ data: addCompanyData, message: '업체 등록이 완료되었습니다.' });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
       return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
@@ -32,8 +34,34 @@ class CompanyController {
     try {
       const companyInfoAll = await this.companyService.findCompanyAll();
       return res.status(200).json({ data: companyInfoAll });
-    } catch (error) {
-      return res.status(400).json({ errorMessage: error.message });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+  // 나의 회사 조회
+  getMyCompany = async (req, res) => {
+    try {
+      const userId = res.locals.userId;
+      const getAllCompanyService = await this.companyService.getMyCompany(userId);
+
+      return res.status(200).json({ data: getAllCompanyService });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -42,6 +70,8 @@ class CompanyController {
     const { companyId } = req.params;
     const { userId } = res.locals.userId;
     const { companyName, address, phoneNumber } = req.body;
+
+    console.log(companyId, userId, companyName, address, phoneNumber);
 
     try {
       const updatedData = await this.companyService.updateCompanyInfo(
@@ -55,8 +85,15 @@ class CompanyController {
       return res
         .status(200)
         .json({ message: '업체 정보 수정이 완료되었습니다.', data: updatedData });
-    } catch (error) {
-      return res.status(400).json({ errorMessage: error.message });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -68,8 +105,15 @@ class CompanyController {
       await this.companyService.deleteCompany(companyId, sureDelete);
 
       return res.status(200).json({ message: '업체 정보 삭제가 완료되었습니다.' });
-    } catch (error) {
-      return res.status(400).json({ errorMessage: error.message });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 }

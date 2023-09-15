@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="stylesheet" href="/css/calendar.css" />
+    <script src="/js/calendar.js" defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <link rel="stylesheet" href="calendar.css"> -->
+  </head>
+
+  <body>
+    <!-- Button trigger modal -->
+    <div>
+      <label for="offer-id">제공 서비스: </label>
+      <select id="offer-id">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+    <div>
+      <label for="reservation-date">예약일: </label>
+      <input id="reservation-date" type="text" readonly />
+    </div>
+    <div>
+      <label for="extra-requests">요청사항: </label>
+      <textarea id="extra-requests"></textarea>
+    </div>
+    <button id="reserve-btn">예약</button>
+    <div class="modal" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Calendar</h4>
+            <button type="button" class="close" data-dismiss="modal" id="closeModal">
+              &times;
+            </button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="wrapper">
+              <header>
+                <p class="current-date"></p>
+                <div class="icons">
+                  <span id="prev-month-btn" class="material-symbols-rounded">chevron_left</span>
+                  <span id="next-month-btn" class="material-symbols-rounded">chevron_right</span>
+                </div>
+              </header>
+              <div class="calendar">
+                <ul class="weeks">
+                  <li style="color: red">일</li>
+                  <li>월</li>
+                  <li>화</li>
+                  <li>수</li>
+                  <li>목</li>
+                  <li>금</li>
+                  <li>토</li>
+                </ul>
+                <ul id="days" class="days"></ul>
+              </div>
+            </div>
+            <button id="calendar-submit">확인</button><button id="calendar-cancel">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <script src="calendar.js"></script> -->
+    <script>
+      // Get a reference to the button and modal
+      const openModalCalendarInput = document.getElementById('reservation-date');
+      const myModal = document.getElementById('myModal');
+      const closeModalBtn = document.getElementById('closeModal');
+      const reserveBtn = document.getElementById('reserve-btn');
+
+      reserveBtn.addEventListener('click', function () {
+        axios({
+          method: 'post',
+          url: '/api/reservations',
+          data: {
+            offerId: document.getElementById('offer-id').value,
+            reservationDate: document.getElementById('reservation-date').value,
+            extraRequests: document.getElementById('extra-requests').value,
+          },
+        });
+        alert('예약이 완료되었습니다.');
+        location.reload();
+      });
+      // Add a click event listener to open the modal
+      openModalCalendarInput.addEventListener('click', function () {
+        myModal.style.display = 'block';
+      });
+
+      // Add a click event listener to close the modal
+      closeModalBtn.addEventListener('click', function () {
+        myModal.style.display = 'none';
+      });
+
+      // Close the modal if the user clicks anywhere outside of it
+      window.addEventListener('click', function (event) {
+        if (event.target === myModal) {
+          myModal.style.display = 'none';
+        }
+      });
+
+      const calendarSubmit = document.getElementById('calendar-submit');
+      const calendarCancel = document.getElementById('calendar-cancel');
+
+      calendarSubmit.addEventListener('click', function () {
+        openModalInput.value = selectedDate;
+        myModal.style.display = 'none';
+      });
+
+      calendarCancel.addEventListener('click', function () {
+        myModal.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>
