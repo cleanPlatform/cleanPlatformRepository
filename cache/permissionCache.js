@@ -5,14 +5,12 @@ class PermissionCache {
   permissionCache = new NodeCache();
 
   setPermissionCache = async (userId) => {
-    console.log('캐시 불러오기');
     try {
       const user = await User.findOne({ where: { userId } });
 
       if (!this.permissionCache.get(`permission${userId}`)) {
         this.permissionCache.set(`permission${userId}`, user.permission);
       }
-      console.log('권한 캐시 저장 성공!');
     } catch (err) {
       console.error('권한 캐시 저장 실패: ', err);
       throw err;

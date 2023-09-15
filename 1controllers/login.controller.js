@@ -10,7 +10,6 @@ class LoginController {
 
     try {
       const token = await this.loginService.login(email, password);
-      console.log('token :', token);
 
       res.cookie('Authorization', token.accessToken, {
         httpOnly: true,
@@ -41,7 +40,6 @@ class LoginController {
     const userId = res.locals.userId;
     try {
       await this.loginService.logout(userId);
-
       res.clearCookie('Authorization');
       res.clearCookie('SignIn');
       res.clearCookie('refresh');

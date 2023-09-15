@@ -8,7 +8,7 @@ const nunjucks = require('nunjucks');
 const jwt = require('jsonwebtoken');
 
 const { isLogin } = require('./middlewares/auth-middleware');
-const render = require('./middlewares/render');
+const render = require('./middlewares/render-middleware');
 
 require('dotenv').config();
 
@@ -58,6 +58,8 @@ app.get('/data', render.data);
 app.get('/myCompany', render.myCompany);
 
 app.get('/companyService', render.companySerivce);
+
+app.get('/reservation', render.reservation);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
