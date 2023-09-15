@@ -28,6 +28,12 @@ div.input-group button {
   text-align: right;
 }
 
+.deleteAccount {
+  display: grid;
+  grid-template-columns: 100px 150px 80px;
+  text-align: right;
+}
+
 .userDiv {
   display: grid;
 

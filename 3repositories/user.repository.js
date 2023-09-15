@@ -32,7 +32,7 @@ class UserRepository {
   };
 
   //회원 정보 수정 API
-  updateUserRepository = async (email, name, nickname, hashPassword, address, phoneNumber) => {
+  updateUserRepository = async (userId, hashPassword, name, nickname, address, phoneNumber) => {
     await User.update(
       {
         name: name,
@@ -41,13 +41,13 @@ class UserRepository {
         address: address,
         phoneNumber: phoneNumber,
       },
-      { where: { email } }
+      { where: { userId } }
     );
   };
 
   //회원 탈퇴 API
-  deleteAccountService = async (email) => {
-    await User.destroy({ where: { email: email } });
+  deleteAccountService = async (userId) => {
+    await User.destroy({ where: { userId: userId } });
   };
 }
 

@@ -36,25 +36,17 @@ class UsersController {
   //회원 정보 조회 API
   referUserController = async (req, res) => {
     try {
-      const { authorization } = req.headers;
-      const { password } = req.body;
-      if (!authorization || !authorization.startsWith('Bearer ')) {
-        return res.status(401).json({ message: '로그인이 필요합니다.' });
-      }
+      const { userId } = res.locals;
 
-      const token = authorization.replace('Bearer ', '');
+      const referUser = await this.userService.referUserService(userId);
 
-      const user = await this.userService.referUserService(token, password);
-
-      const userInfo = user.userWithoutPassword;
-
-      // console.log('컨트롤러 user :\n', user);
+      const user = referUser.user;
 
       if (user instanceof ApiError) {
-        return res.status(user.status).json({ message: user.message });
+        return res.status(user.status).json({ message: referUser.message });
       }
 
-      return res.status(200).json({ message: user.message, userInfo });
+      return res.status(200).json({ message: referUser.message, user });
     } catch (err) {
       console.log('컨트롤러 캐치 err :', err);
       return res.status(500).json({ message: err.message || err.toString() });
@@ -64,14 +56,7 @@ class UsersController {
   //회원 정보 수정 API
   updateUserController = async (req, res) => {
     try {
-      const { authorization } = req.headers;
-      if (!authorization || !authorization.startsWith('Bearer ')) {
-        return res.status(401).json({ message: '로그인이 필요합니다.' });
-      }
-
-      const token = authorization.replace('Bearer ', '');
-
-      await this.userService.updateUserService(token, req.body);
+      await this.userService.updateUserService(req.body);
 
       return res.status(200).json({ message: '프로필을 수정하였습니다.' });
     } catch (err) {
@@ -80,18 +65,16 @@ class UsersController {
     }
   };
 
-  //  회원 탈퇴 매서드
-  deleteAccountController = async (req, res) => {
+  //  회원 탈퇴 핸들러
+  deleteAccoountController = async (req, res) => {
     try {
-      // const {password} = req.body
-      const { authorization } = req.headers;
-      if (!authorization || !authorization.startsWith('Bearer ')) {
-        return res.status(401).json({ message: '로그인이 필요합니다.' });
-      }
+      const { userId } = res.locals;
+      const { password } = req.body;
 
-      const token = authorization.replace('Bearer ', '');
-
-      await this.userService.deleteAccountService(token, req.body);
+      await this.userService.deleteAccountService(userId, password);
+      res.clearCookie('Authorization');
+      res.clearCookie('SignIn');
+      res.clearCookie('refresh');
 
       return res.status(200).json({ message: '회원 탈퇴 완료하였습니다.' });
     } catch (err) {

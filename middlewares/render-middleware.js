@@ -13,3 +13,7 @@ exports.myCompany = (req, res) => {
 exports.companySerivce = (req, res) => {
   res.render('companyService.html', {});
 };
+
+exports.reservation = (req, res) => {
+  res.render('reservation.html', {});
+};

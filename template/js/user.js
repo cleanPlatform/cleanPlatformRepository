@@ -9,13 +9,22 @@ function isLogin() {
       var logoutButton = document.getElementById('logoutButton');
       var signupButton = document.getElementById('signupButton');
       var myCompanyButton = document.getElementById('myCompanyButton');
+      var deleteAccount = document.getElementById('deleteAccountButton');
+      var userUpdate = document.getElementById('userUpdateButton');
+      const password = document.getElementById('deleteAccount1');
 
       if (lookValue === 0) {
         logoutButton.style.display = 'none';
         myCompanyButton.style.display = 'none';
+        deleteAccount.style.display = 'none';
+        userUpdate.style.display = 'none';
+        password.style.display = 'none';
       } else if (lookValue >= 1) {
         logoutButton.style.display = '';
         myCompanyButton.style.display = '';
+        deleteAccount.style.display = '';
+        userUpdate.style.display = '';
+        password.style.display = '';
         loginButton.style.display = 'none';
         signupButton.style.display = 'none';
       }
@@ -32,7 +41,6 @@ window.onload = function () {
 
 //  회원가입
 async function signUp() {
-  console.log('회원가입 함수 시작');
   const permission = document.querySelector('#signup-permission').value;
   const name = document.querySelector('#signup-name').value;
   const nickname = document.querySelector('#signup-nickname').value;
@@ -59,8 +67,9 @@ async function signUp() {
     }),
   });
   const result = await response.json();
-  console.log(result.message);
-  window.location.reload();
+  if (response.status === 201) {
+    window.location.reload();
+  }
   return alert(result.message);
 }
 
@@ -118,6 +127,132 @@ document
   </div>
   `
     );
+  });
+
+// 회원 정보 수정 1
+document
+  .querySelector('.btn-primary[data-target="#userUpdate"]')
+  .addEventListener('click', async function () {
+    // 우선 회원정보를 가져온다.
+    const response = await fetch(`/api/user/me`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const result = await response.json();
+
+    const userId = result.user.userId;
+    const email = result.user.email;
+
+    const name = result.user.name;
+    const nickname = result.user.nickname;
+    const address = result.user.address;
+    const phoneNumber = result.user.phoneNumber;
+
+    const content = `
+    <form>
+      <div class="modal-body">
+
+              <div>회원 번호 ${userId}, 로그인 이메일 ${email}</div>
+
+          <div class="input-group">
+              <label for="password">새 비밀번호　</label>
+              <input id="password" type="password" placeholder="새 비밀번호">
+          </div>
+          <div class="input-group">
+              <label for="passwordConfirm">비밀번호 확인　</label>
+              <input id="passwordConfirm" type="password" placeholder="비밀번호 확인">
+          </div>
+
+          <div class="input-group">
+              <label for="name">회원명　</label>
+              <input id="name" type="text" placeholder="회사 주소" value="${name}">
+          </div>
+          <div class="input-group">
+              <label for="nickname">닉네임　</label>
+              <input id="nickname" type="text" placeholder="닉네임" value="${nickname}">
+          </div>
+          <div class="input-group">
+              <label for="address">주소　</label>
+              <input id="address" type="text" placeholder="주소" value="${address}">
+          </div>
+          <div class="input-group">
+              <label for="phoneNumber">전화번호　</label>
+              <input id="phoneNumber" type="text" placeholder="전화번호" value="${phoneNumber}">
+          </div>
+      </div>
+  </form>
+<div class="modal-footer">
+    <button id="signup-btn" type="submit" class="btn">취소</button>
+    <button type="button" class="btn btn-primary" onclick="userUpdate(${userId})">회원 정보 수정하기</button>
+</div>
+`;
+
+    showModal('userUpdate', '회원 정보 수정', content);
+  });
+
+//  회원 정보 수정 2
+async function userUpdate(userId) {
+  const password = document.querySelector(`#password`).value;
+  const passwordConfirm = document.querySelector(`#passwordConfirm`).value;
+  const name = document.querySelector(`#name`).value;
+  const nickname = document.querySelector(`#nickname`).value;
+  const address = document.querySelector(`#address`).value;
+  const phoneNumber = document.querySelector(`#phoneNumber`).value;
+
+  const response = await fetch(`/api/user/me`, {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId,
+      password,
+      passwordConfirm,
+      name,
+      nickname,
+      address,
+      phoneNumber,
+    }),
+  });
+  const result = await response.json();
+  console.log(result.message);
+  window.location.reload();
+  return alert(result.message);
+}
+
+// 회원 탈퇴
+
+// 클릭 이벤트 핸들러를 추가합니다.
+document
+  .querySelector('.btn-primary[data-target="#deleteAccount"]')
+  .addEventListener('click', async function () {
+    const password = document.getElementById('deleteAccount1').value;
+
+    const sureDelete = confirm(`정말로 회원 탈퇴하시겠습니까? 복구 불가능합니다.`);
+
+    if (sureDelete) {
+      const response = await fetch(`/api/user/me`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (result.success) {
+        // 회원 탈퇴가 성공한 경우
+        window.location.reload();
+        alert(result.message);
+      } else {
+        // 회원 탈퇴가 실패한 경우
+        alert(result.message);
+      }
+    }
   });
 
 //  업장으로 이동

@@ -5,7 +5,7 @@ exports.authorized = async (req, res, next) => {
   const authToken = req.cookies.Authorization;
 
   if (!authToken) {
-    return res.status(403).json({ errorMessage: '권한이 존재하지 않습니다.' });
+    return res.status(401).json({ errorMessage: '로그인이 되지 않았습니다!' });
   }
 
   const authType = authToken.split(' ')[0];
@@ -51,7 +51,6 @@ exports.hasMinimumPermission = (permission) => {
         owner: 2,
         guest: 1,
       };
-      console.log('!!!!!!!!!!!!!!!!!!!!');
       if (grade[userPermission] >= grade[permission]) {
         return next();
       }
@@ -109,13 +108,11 @@ exports.decode = (req, token, cookie_secret, res) => {
       console.log('엑세스 토큰이 만료되었습니다.');
 
       const refreshToken = req.cookies.refresh;
-      console.log(refreshToken);
       const reToken = refreshToken.split(' ')[1];
 
       try {
         jwt.verify(reToken, cookie_secret);
         const decode = jwt.decode(token, cookie_secret);
-        console.log('리프레시 토큰 검증 성공');
 
         // 엑세스 토큰생성
         let accessToken = this.makeAccessToken(decode);

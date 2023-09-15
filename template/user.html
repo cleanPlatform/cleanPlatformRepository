@@ -28,11 +28,21 @@
             data-whatever="@mdo">로그아웃
         </button>
 
+        <button type="button" class="btn btn-primary" id="userUpdateButton" data-toggle="modal"
+            data-target="#userUpdate" data-whatever="@mdo">정보 수정
+        </button>
 
         <button type="button" class="btn btn-primary" id="signupButton" data-toggle="modal" data-target="#signUp"
             data-whatever="@mdo">회원가입
         </button>
     </div>
+    <div class="userDiv">
+        <input id="deleteAccount1" type="password" placeholder="비밀번호" />
+        <button type="button" class="btn btn-primary" id="deleteAccountButton" data-toggle="modal"
+            data-target="#deleteAccount" data-whatever="@mdo">회원 탈퇴
+        </button>
+    </div>
+
     <br>
     <button type="button" class="btn btn-primary" id="myCompanyButton" data-toggle="modal" data-whatever="@mdo"
         data-target="#myCompany">내 업장 관리

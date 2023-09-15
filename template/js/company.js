@@ -47,7 +47,6 @@ async function getMyCompanyList() {
 
       // 한줄한줄 만들기
       myCompanies.forEach((company) => {
-        console.log('myCompanies :', myCompanies);
         const compnayName = company.companyName;
         const modalContent = `
           <div class="companyList">
@@ -161,8 +160,6 @@ async function createCompany() {
   const companyName = document.querySelector('#createCompany-name').value;
   const address = document.querySelector('#createCompany-adress').value;
   const phoneNumber = document.querySelector('#createCompany-phoneNumber').value;
-
-  console.log(companyName, address, phoneNumber);
 
   const response = await fetch(`/api/company/companies`, {
     method: 'POST',
