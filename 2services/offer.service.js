@@ -126,10 +126,22 @@ class OfferService {
   };
 
   // 업체 서비스 전체 조회
-  findAllOffer = async (userId, companyId) => {
-    const findeService = await this.CompanyRepository.searchOneCompany2(userId, companyId);
+  findAllOffer = async (companyId) => {
+    const findAll = await this.OfferRepository.findAllOffer(companyId);
+    if (!findAll) {
+      throw new ApiError(404, '서비스 조회 실패');
+    }
+
+    return findAll;
+  };
+
+  // 나의 업체 조회
+  findMyOffer = async (companyId, userId) => {
+    console.log('companyId, userId', companyId, userId);
+    // 업체 조회 기능
+    const findeService = await this.CompanyRepository.searchOneCompany2(companyId, userId);
     if (!findeService) {
-      throw new ApiError(401, '서비스 조회 실패');
+      throw new ApiError(400, ' 업체가 없습니다.');
     }
 
     const findAll = await this.OfferRepository.findAllOffer(companyId);

@@ -72,8 +72,10 @@ async function onPageLoad() {
 document.addEventListener('DOMContentLoaded', onPageLoad);
 
 async function getMyCompanySerivceList() {
+  const { companyId } = params;
+  console.log('companyId :', companyId);
   try {
-    const myCompanyServiceList = await fetch(`/api/offer/companies`, {
+    const myCompanyServiceList = await fetch(`/api/offer/companies/${companyId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +128,7 @@ async function getMyCompanySerivceList() {
         myCompanyListContainer.innerHTML += modalContent;
       });
     } else {
-      console.error('응답이 실패했습니다.', myCompanyList.status);
+      console.error('응답이 실패했습니다.', myCompanyServiceList.status);
     }
   } catch (err) {
     console.error('에러 :', err);

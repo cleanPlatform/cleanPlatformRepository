@@ -87,11 +87,32 @@ class OfferController {
   // 업체 서비스 전체 조회
   getOffer = async (req, res, next) => {
     const userId = res.locals.userId;
-    const { companyId } = req.params;
+
     console.log('companyId :', companyId);
     try {
       const findAllMessage = await this.offerService.findAllOffer(userId, companyId);
       return res.status(201).json({ message: '조회 완료', data: findAllMessage });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+
+  // 내 업체 조회
+  myOffers = async (req, res, next) => {
+    try {
+      const userId = res.locals.userId;
+      const { companyId } = req.params;
+      console.log('companyId :', companyId);
+
+      const findOneMessage = await this.offerService.findMyOffer(companyId, userId);
+      return res.status(201).json({ message: '내 서비스 완료', data: findOneMessage });
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);
