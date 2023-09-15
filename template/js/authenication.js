@@ -15,7 +15,7 @@ async function logIn() {
   });
   const result = await response.json();
 
-  if (response.status == 200) {
+  if (response.status == 201) {
     location.reload();
   }
 
@@ -58,8 +58,11 @@ async function logOut() {
     },
   });
 
-  location.reload();
-  alert('로그아웃 되었습니다.');
+  if (response.status == 201) {
+    location.reload();
+  }
+
+  return alert(result.message);
 }
 
 // '로그아웃' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가

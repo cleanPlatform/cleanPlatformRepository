@@ -137,8 +137,6 @@ class OfferService {
 
   // 나의 업체 조회
   findMyOffer = async (companyId, userId) => {
-    console.log('companyId, userId', companyId, userId);
-    // 업체 조회 기능
     const findeService = await this.CompanyRepository.searchOneCompany2(companyId, userId);
     if (!findeService) {
       throw new ApiError(400, ' 업체가 없습니다.');

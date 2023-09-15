@@ -45,7 +45,7 @@ class UsersController {
         return res.status(user.status).json({ message: referUser.message });
       }
 
-      return res.status(200).json({ message: referUser.message, user });
+      return res.status(201).json({ message: referUser.message, user });
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);
@@ -94,7 +94,7 @@ class UsersController {
       res.clearCookie('SignIn');
       res.clearCookie('refresh');
 
-      return res.status(200).json({ message: '회원 탈퇴 완료하였습니다.' });
+      return res.status(201).json({ message: '회원 탈퇴 완료하였습니다.' });
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);
