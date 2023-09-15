@@ -4,6 +4,28 @@ const params = Object.fromEntries(urlSearchParams.entries());
 const companyId = params.companyId;
 const companyName = params.companyName;
 
+//  로그인 상태에 따라서 다르게 버튼을 보여줌
+function isLogin() {
+  fetch('/data')
+    .then((response) => response.json())
+    .then((data) => {
+      var lookValue = data.look;
+
+      if (lookValue <= 1) {
+        alert('잘못 된 요청!\n메인 페이지로 이동합니다.');
+        window.location.href = '/';
+      }
+    })
+    .catch((error) => {
+      console.error('데이터 가져오기 오류:', error);
+    });
+}
+
+// 페이지 로드 시 스크립트 실행
+window.onload = function () {
+  isLogin();
+};
+
 document.getElementById('companyIdHeader').textContent = `"${companyName}"의 서비스 관리페이지`;
 
 // '서비스 등록하기' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가

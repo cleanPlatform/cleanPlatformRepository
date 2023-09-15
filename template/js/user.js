@@ -4,6 +4,7 @@ function isLogin() {
     .then((response) => response.json())
     .then((data) => {
       var lookValue = data.look;
+      console.log('lookValue :', lookValue);
 
       var loginButton = document.getElementById('loginButton');
       var logoutButton = document.getElementById('logoutButton');
@@ -12,21 +13,34 @@ function isLogin() {
       var deleteAccount = document.getElementById('deleteAccountButton');
       var userUpdate = document.getElementById('userUpdateButton');
       const password = document.getElementById('deleteAccount1');
+      var reservationButton = document.getElementById('reservationButton');
 
-      if (lookValue === 0) {
+      if (lookValue >= 0) {
         logoutButton.style.display = 'none';
-        myCompanyButton.style.display = 'none';
         deleteAccount.style.display = 'none';
         userUpdate.style.display = 'none';
         password.style.display = 'none';
-      } else if (lookValue >= 1) {
+        reservationButton.style.display = 'none';
+
+        myCompanyButton.style.display = 'none';
+      }
+
+      if (lookValue >= 1) {
+        signupButton.style.display = 'none';
+
         logoutButton.style.display = '';
-        myCompanyButton.style.display = '';
         deleteAccount.style.display = '';
         userUpdate.style.display = '';
         password.style.display = '';
+        reservationButton.style.display = '';
+
         loginButton.style.display = 'none';
-        signupButton.style.display = 'none';
+      }
+
+      if (lookValue >= 2) {
+        reservationButton.style.display = 'none';
+
+        myCompanyButton.style.display = '';
       }
     })
     .catch((error) => {
@@ -240,16 +254,11 @@ document
       });
 
       const result = await response.json();
-      console.log(result);
 
-      if (result.success) {
-        // 회원 탈퇴가 성공한 경우
+      if (response.status === 201) {
         window.location.reload();
-        alert(result.message);
-      } else {
-        // 회원 탈퇴가 실패한 경우
-        alert(result.message);
       }
+      return alert(result.message);
     }
   });
 
@@ -258,4 +267,11 @@ document
   .querySelector('.btn-primary[data-target="#myCompany"]')
   .addEventListener('click', function () {
     window.location.href = '/myCompany';
+  });
+
+//  예약으로 이동
+document
+  .querySelector('.btn-primary[data-target="#myReservation"]')
+  .addEventListener('click', function () {
+    window.location.href = '/reservation';
   });

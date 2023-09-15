@@ -64,7 +64,7 @@ class OfferRepository {
 
   // 업체 서비스 전체 조회
   findAllOffer = async (companyId) => {
-    const offer = await Offer.findAll({ where: { companyId } });
+    const offer = await Offer.findAll({ where: { companyId }, order: [['offerNumber']] });
 
     return offer;
   };

@@ -109,7 +109,6 @@ class OfferController {
     try {
       const userId = res.locals.userId;
       const { companyId } = req.params;
-      console.log('companyId :', companyId);
 
       const findOneMessage = await this.offerService.findMyOffer(companyId, userId);
       return res.status(201).json({ message: '내 서비스 완료', data: findOneMessage });

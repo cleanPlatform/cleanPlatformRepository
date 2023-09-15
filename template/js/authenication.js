@@ -15,7 +15,7 @@ async function logIn() {
   });
   const result = await response.json();
 
-  if (response.status == 200) {
+  if (response.status == 201) {
     location.reload();
   }
 
@@ -52,14 +52,19 @@ document.querySelector('.btn-primary[data-target="#logIn"]').addEventListener('c
 //  로그아웃
 async function logOut() {
   const response = await fetch(`/api/sign/signout`, {
-    method: 'GET',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  location.reload();
-  alert('로그아웃 되었습니다.');
+  const result = await response.json();
+
+  if (response.status == 201) {
+    location.reload();
+  }
+
+  return alert(result.message);
 }
 
 // '로그아웃' 버튼 클릭 시 모달을 열기 위한 이벤트 리스너 추가
