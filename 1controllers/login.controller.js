@@ -38,12 +38,12 @@ class LoginController {
   logout = async (req, res) => {
     const userId = res.locals.userId;
     try {
-      await this.loginService.logout(userId);
+      const result = await this.loginService.logout(userId);
       res.clearCookie('Authorization');
       res.clearCookie('SignIn');
       res.clearCookie('refresh');
 
-      return res.status(201).json({ message: '로그아웃에 성공하였습니다.' });
+      return res.status(201).json({ message: '로그아웃ddddd에 성공하였습니다.' });
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);

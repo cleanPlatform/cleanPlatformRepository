@@ -52,11 +52,13 @@ document.querySelector('.btn-primary[data-target="#logIn"]').addEventListener('c
 //  로그아웃
 async function logOut() {
   const response = await fetch(`/api/sign/signout`, {
-    method: 'GET',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json',
     },
   });
+
+  const result = await response.json();
 
   if (response.status == 201) {
     location.reload();
