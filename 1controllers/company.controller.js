@@ -17,8 +17,14 @@ class CompanyController {
       );
 
       return res.status(200).json({ data: addCompanyData, message: '업체 등록이 완료되었습니다.' });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
       return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
@@ -28,8 +34,15 @@ class CompanyController {
     try {
       const companyInfoAll = await this.companyService.findCompanyAll();
       return res.status(200).json({ data: companyInfoAll });
-    } catch (error) {
-      return res.status(400).json({ errorMessage: error.message });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -72,8 +85,15 @@ class CompanyController {
       return res
         .status(200)
         .json({ message: '업체 정보 수정이 완료되었습니다.', data: updatedData });
-    } catch (error) {
-      return res.status(400).json({ errorMessage: error.message });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -85,8 +105,15 @@ class CompanyController {
       await this.companyService.deleteCompany(companyId, sureDelete);
 
       return res.status(200).json({ message: '업체 정보 삭제가 완료되었습니다.' });
-    } catch (error) {
-      return res.status(400).json({ errorMessage: error.message });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
+      }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 }

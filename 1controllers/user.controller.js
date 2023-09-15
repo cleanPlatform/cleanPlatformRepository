@@ -3,9 +3,8 @@ const ApiError = require('../utils/apierror');
 
 class UsersController {
   userService = new UserService();
-  // 회원가입 API
+  // 회원가입 핸들러
   signupController = async (req, res) => {
-    console.log('회원가입 매서드 시작');
     try {
       const { permission, name, nickname, email, password, passwordConfirm, address, phoneNumber } =
         req.body;
@@ -48,20 +47,39 @@ class UsersController {
 
       return res.status(200).json({ message: referUser.message, user });
     } catch (err) {
-      console.log('컨트롤러 캐치 err :', err);
-      return res.status(500).json({ message: err.message || err.toString() });
+      if (err instanceof ApiError) {
+        console.error(err.message);
+        return res.status(err.status).json({ message: err.message });
+      }
+
+      console.log('err :', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
   //회원 정보 수정 API
   updateUserController = async (req, res) => {
     try {
-      await this.userService.updateUserService(req.body);
+      const { userId, password, passwordConfirm, name, nickname, address, phoneNumber } = req.body;
+      await this.userService.updateUserService(
+        userId,
+        password,
+        passwordConfirm,
+        name,
+        nickname,
+        address,
+        phoneNumber
+      );
 
-      return res.status(200).json({ message: '프로필을 수정하였습니다.' });
+      return res.status(201).json({ message: '프로필을 수정하였습니다.' });
     } catch (err) {
-      console.log(err);
-      return res.status(err.status || 500).json({ message: err.message });
+      if (err instanceof ApiError) {
+        console.error(err.message);
+        return res.status(err.status).json({ message: err.message });
+      }
+
+      console.log('err :', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -78,8 +96,13 @@ class UsersController {
 
       return res.status(200).json({ message: '회원 탈퇴 완료하였습니다.' });
     } catch (err) {
-      console.log(err);
-      return res.status(err.status || 500).json({ message: err.message });
+      if (err instanceof ApiError) {
+        console.error(err.message);
+        return res.status(err.status).json({ message: err.message });
+      }
+
+      console.log('err :', err);
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 }

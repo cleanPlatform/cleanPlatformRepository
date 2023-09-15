@@ -21,17 +21,16 @@ class LoginController {
         sameSite: 'strict',
       });
 
-      res.status(200).json({ message: `로그인에 성공했습니다.` });
+      return res.status(200).json({ message: `로그인에 성공했습니다.` });
     } catch (err) {
-      console.log('컨트롤러 err :', err);
       if (err instanceof ApiError) {
-        return res
-          .status(409)
-          .json({ message: '로그인에 실패했습니다. 메일과 비밀번호를 확인해주세요.' });
+        console.error(err.message);
+
+        return res.status(err.status).json({ message: err.message });
       }
-      return res
-        .status(409)
-        .json({ message: '로그인에 실패했습니다. 메일과 비밀번호를 확인해주세요.' });
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 
@@ -48,11 +47,12 @@ class LoginController {
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);
+
         return res.status(err.status).json({ message: err.message });
-      } else {
-        console.error(err);
-        return res.status(500).json({ message: 'Internal Server Error' });
       }
+      console.error(err);
+
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   };
 }

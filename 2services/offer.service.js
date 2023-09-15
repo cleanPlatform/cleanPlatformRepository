@@ -3,6 +3,8 @@ const CompanyRepository = require('../3repositories/company.repository');
 const UserRepository = require('../3repositories/user.repository');
 const ApiError = require('../utils/apierror');
 
+const { verificationNumber } = require('../middlewares/verificationReg-middleware');
+
 class OfferService {
   OfferRepository = new OfferRepository();
   CompanyRepository = new CompanyRepository();
@@ -10,7 +12,6 @@ class OfferService {
 
   // 업체 서비스 생성
   createOffer = async (userId, companyId, offerName, offerNumber, price) => {
-    console.log('오퍼 서비스 진입');
     if (!offerName) {
       throw new ApiError(400, '업체 이름을 넣어주세요');
     }
@@ -18,11 +19,7 @@ class OfferService {
       throw new ApiError(400, '업체 전화번호를 넣어주세요');
     }
 
-    if (!price) {
-      throw new ApiError(400, '가격을 넣어주세요');
-    }
-
-    console.log('오퍼 검증 통과');
+    verificationNumber(price);
 
     // 유저 조회 기능
     const findUser = await this.UserRepository.findUserOne(userId);
@@ -30,15 +27,11 @@ class OfferService {
       throw new ApiError(401, ' 유저가 없습니다.');
     }
 
-    console.log('오퍼 유저조회 통과');
-
     // 업체 조회 기능
     const findeService = await this.CompanyRepository.searchOneCompany(companyId);
     if (!findeService) {
       throw new ApiError(401, ' 업체가 없습니다.');
     }
-
-    console.log('오퍼 업체조회 통과');
 
     // 업체 id랑 userid는 기능 생성 후 로직 추가 예정
     const createService = await this.OfferRepository.createOffer(
@@ -133,8 +126,13 @@ class OfferService {
   };
 
   // 업체 서비스 전체 조회
-  findAllOffer = async () => {
-    const findAll = await this.OfferRepository.findAllOffer();
+  findAllOffer = async (userId, companyId) => {
+    const findeService = await this.CompanyRepository.searchOneCompany2(userId, companyId);
+    if (!findeService) {
+      throw new ApiError(401, '서비스 조회 실패');
+    }
+
+    const findAll = await this.OfferRepository.findAllOffer(companyId);
     if (!findAll) {
       throw new ApiError(404, '서비스 조회 실패');
     }
@@ -143,8 +141,8 @@ class OfferService {
   };
 
   // 업체 서비스 상세 조회
-  findOneOffer = async (offerId, userId) => {
-    const findOne = await this.OfferRepository.findOneOffer(offerId, userId);
+  findOneOffer = async (companyId) => {
+    const findOne = await this.OfferRepository.findOneOffer(companyId);
     if (!findOne) {
       throw new ApiError(400, '조회된 서비스가 없습니다.');
     }
