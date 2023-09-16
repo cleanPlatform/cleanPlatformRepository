@@ -6,10 +6,14 @@ const userRouter = require('./user.router');
 const companyRouter = require('./company.router');
 const offerRouter = require('./offer.router');
 const loginRouter = require('./login.router');
-// const reservationRouter = require('./reservation.router');
+const reservationRouter = require('./reservation.router');
 // const reviewRouter = require('./review.router');
 
 const defaultRoutes = [
+  {
+    path: '/reservations',
+    route: reservationRouter,
+  },
   {
     path: '/auth',
     route: authRouter,
