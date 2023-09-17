@@ -43,7 +43,7 @@ class LoginController {
       res.clearCookie('SignIn');
       res.clearCookie('refresh');
 
-      return res.status(201).json({ message: '로그아웃ddddd에 성공하였습니다.' });
+      return res.status(201).json({ message: '로그아웃에 성공하였습니다.' });
     } catch (err) {
       if (err instanceof ApiError) {
         console.error(err.message);

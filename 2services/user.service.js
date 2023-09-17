@@ -184,7 +184,6 @@ class UserService {
       }
 
       const haveCompany = await this.companyRepository.companyId(userId);
-      console.log('haveCompany :', haveCompany);
       if (haveCompany.length !== 0) {
         throw new Error('등록된 업장이 있으면 탈퇴하실 수 없습니다.');
       } else {

@@ -6,11 +6,7 @@ const ReservationController = require('../1controllers/reservation.controller');
 const reservationController = new ReservationController();
 
 // 예약 등록
-router.post(
-  '/',
-  //   authorized,
-  reservationController.createReservation
-);
+router.post('/', authorized, reservationController.createReservation);
 
 // 업체 예약 조회
 router.get('/:companyId/reservations', reservationController.getCompanyReservations);
