@@ -117,7 +117,7 @@ class OfferService {
       throw new ApiError(401, ' 유저가 없습니다.');
     }
 
-    const destroyService = await this.OfferRepository.destroyOffer(offerId, userId);
+    const destroyService = await this.OfferRepository.destroyOffer(offerId);
     if (!destroyService) {
       throw new ApiError(404, '서비스 삭제 실패');
     }

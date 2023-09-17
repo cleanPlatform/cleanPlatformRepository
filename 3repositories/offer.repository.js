@@ -49,13 +49,12 @@ class OfferRepository {
   };
 
   // 업체 서비스 삭제
-  destroyOffer = async (offerId, userId) => {
+  destroyOffer = async (offerId) => {
     try {
       const destroyRepository = await Offer.destroy({
-        where: { offerId, userId },
+        where: { offerId },
       });
 
-      await t.commit();
       return destroyRepository;
     } catch (error) {
       throw error;
